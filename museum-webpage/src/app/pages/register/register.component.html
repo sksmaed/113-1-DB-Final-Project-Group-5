@@ -1,0 +1,70 @@
+<!-- register.component.html -->
+<div class="container-fluid register-form">
+    <form needs-validation [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="note">
+        <h1> 使用者資料註冊 </h1>
+      </div>
+  
+      <div class="mb-4">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" autofocus formControlName="username" id="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['username'].errors,
+                       'is-valid': submitted && !f['username'].errors }" />
+        <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+          <div *ngIf="f['username'].errors['required']">Username 為必填</div>
+          <div *ngIf="f['username'].errors['minlength']">
+            Username 必須至少為六個字元
+          </div>
+          <div *ngIf="f['username'].errors['maxlength']">
+            Username 必須至多為二十個字元
+          </div>
+        </div>
+        <div class="valid-feedback">
+          填寫正確
+        </div>
+      </div>
+  
+      <div class="mb-4">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="text" formControlName="phone" id="phone" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['phone'].errors,
+                       'is-valid': submitted && !f['email'].errors }" />
+        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+          <div *ngIf="f['phone'].errors['required']">手機號碼為必填</div>
+          <div *ngIf="f['phone'].errors['phone']">手機號碼格式不符</div>
+        </div>
+        <div class="valid-feedback">
+          填寫正確
+        </div>
+      </div>
+  
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" formControlName="password" id="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['password'].errors,
+                       'is-valid': submitted && !f['password'].errors }" />
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div *ngIf="f['password'].errors['required']">Password 為必填</div>
+          <div *ngIf="f['password'].errors['minlength']">
+            Password 必須至少為六個字元
+          </div>
+          <div *ngIf="f['password'].errors['maxlength']">
+            Password 必須至多為四十個字元
+          </div>
+        </div>
+        <div class="valid-feedback">
+          填寫正確
+        </div>
+      </div>
+  
+      <div class="mb-4">
+        <button type="submit" class="btn btn-primary">送出</button>
+        <button type="button" (click)="onReset()" class="btn btn-warning float-end">
+          重置
+        </button>
+      </div>
+      <div class="alert alert-warning" *ngIf="isSignUpFailed">
+        註冊失敗!<br />{{ errorMessage }}
+      </div>
+      <div class="alert alert-success" *ngIf="isSuccessful">
+        註冊成功！
+      </div>
+    </form>
+  </div>  

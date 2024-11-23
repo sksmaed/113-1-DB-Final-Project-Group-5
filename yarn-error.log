@@ -1,0 +1,46 @@
+Arguments: 
+  /home/sks/.local/share/fnm/node-versions/v18.17.1/installation/bin/node /home/sks/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add express dotenv sequelize pg pg-hstore~
+
+PATH: 
+  /home/sks/miniconda3/bin:/home/sks/miniconda3/condabin:/run/user/1000/fnm_multishells/15901_1732347360471/bin:/home/sks/.local/bin:/run/user/1000/fnm_multishells/15898_1732347360440/bin:/home/sks/.local/share/fnm:/home/sks/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/usr/local/cuda/bin:/usr/local/cuda/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.17.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/pg-hstore~: Not found
+      at params.callback [as _callback] (/home/sks/.cache/node/corepack/yarn/1.22.19/lib/cli.js:66145:18)
+      at self.callback (/home/sks/.cache/node/corepack/yarn/1.22.19/lib/cli.js:140890:22)
+      at Request.emit (node:events:514:28)
+      at Request.<anonymous> (/home/sks/.cache/node/corepack/yarn/1.22.19/lib/cli.js:141862:10)
+      at Request.emit (node:events:514:28)
+      at IncomingMessage.<anonymous> (/home/sks/.cache/node/corepack/yarn/1.22.19/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:628:28)
+      at IncomingMessage.emit (node:events:526:35)
+      at endReadableNT (node:internal/streams/readable:1359:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+npm manifest: 
+  {
+    "name": "113-1-db-final-project-group-5",
+    "version": "1.0.0",
+    "description": "一個博物館展覽與購票系統",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
