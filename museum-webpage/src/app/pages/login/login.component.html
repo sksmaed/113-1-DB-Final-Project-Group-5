@@ -1,1 +1,52 @@
-<p>login works!</p>
+<!-- login.component.html -->
+<div class="container-fluid register-form">
+    <form 
+      *ngIf="!isLoggedIn"
+      needs-validation [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="note">  
+        <h1> 使用者登入 </h1>  
+      </div>  
+      
+      <div class="mb-4">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" autofocus formControlName="username" id="username" class="form-control"
+        [ngClass]="{ 'is-invalid': submitted && f['username'].errors,
+                     'is-valid': submitted && !f['username'].errors }" 
+        />
+        <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+          <div *ngIf="f['username'].errors['required']">Username 為必填</div>
+        </div>
+        <div class="valid-feedback">
+          填寫正確
+        </div>
+      </div>
+  
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" formControlName="password" id="password" class="form-control"
+        [ngClass]="{ 'is-invalid': submitted && f['password'].errors,
+                     'is-valid': submitted && !f['password'].errors }" 
+        />
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div *ngIf="f['password'].errors['required']">Password 為必填</div>
+        </div>
+        <div class="valid-feedback">
+          填寫正確
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <button type="submit" class="btn btn-primary">送出</button>
+        <button type="button" (click)="onReset()"
+        class="btn btn-warning float-end">
+          重置
+        </button>
+      </div>
+      <div class="alert alert-warning" *ngIf="isLoginFailed">
+        Signin failed!<br />{{ errorMessage }}
+    </div>
+    </form>
+    <div class="alert alert-success" *ngIf="isLoggedIn">
+      登入者具備的角色 {{ roles }}.
+    </div>
+  </div>

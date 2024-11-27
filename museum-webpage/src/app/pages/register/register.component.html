@@ -26,8 +26,8 @@
       <div class="mb-4">
         <label for="phone" class="form-label">Phone</label>
         <input type="text" formControlName="phone" id="phone" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['phone'].errors,
-                       'is-valid': submitted && !f['email'].errors }" />
-        <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                       'is-valid': submitted && !f['phone'].errors }" />
+        <div *ngIf="submitted && f['phone'].errors" class="invalid-feedback">
           <div *ngIf="f['phone'].errors['required']">手機號碼為必填</div>
           <div *ngIf="f['phone'].errors['phone']">手機號碼格式不符</div>
         </div>

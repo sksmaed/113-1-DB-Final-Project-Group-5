@@ -1,12 +1,14 @@
 // register.component.ts
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '/src/app/shared/services/auth.service';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../shared/services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class RegisterComponent implements OnInit {
   form: FormGroup = new FormGroup({
@@ -33,7 +35,7 @@ export class RegisterComponent implements OnInit {
             Validators.maxLength(20)
           ]
         ],
-        phone: ['', [Validators.required, Validators.email]],
+        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
         password: [
           '',
           [
