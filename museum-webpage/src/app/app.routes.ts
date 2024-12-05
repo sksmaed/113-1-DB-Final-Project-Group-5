@@ -5,6 +5,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { BoardUserComponent } from './pages/board-user/board-user.component';
 import { BoardAdminComponent } from './pages/board-admin/board-admin.component';
+import { SearchExhComponent } from './pages/search-exh/search-exh.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
@@ -14,4 +15,5 @@ export const routes: Routes = [
     { path: "profile", component: ProfileComponent },
     { path: "user", component: BoardUserComponent },
     { path: "admin", component: BoardAdminComponent },
+    { path: "search", component: SearchExhComponent },
 ];
