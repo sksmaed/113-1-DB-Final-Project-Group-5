@@ -6,7 +6,7 @@ checkDuplicatePhoneNum = (req, res, next) => {
   // Username
   User.findOne({
     where: {
-      username: req.body.phone
+      phone: req.body.phone
     }
   }).then(user => {
     if (user) {
@@ -15,18 +15,18 @@ checkDuplicatePhoneNum = (req, res, next) => {
       });
       return;
     }
+    next();
   });
 };
 
 checkRolesExisted = (req, res, next) => {
+  console.log(req.body.roles);
   if (req.body.roles) {
-    for (let i = 0; i < req.body.roles.length; i++) {
-      if (!ROLES.includes(req.body.roles[i])) {
-        res.status(400).send({
-          message: "Failed! Role does not exist = " + req.body.roles[i]
-        });
-        return;
-      }
+    if (!ROLES.includes(req.body.roles)) {
+      res.status(400).send({
+        message: "Failed! Role does not exist = " + req.body.roles
+      });
+      return;
     }
   }
   

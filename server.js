@@ -23,9 +23,9 @@ const db = require("./app/models");     // 引入 app/models/index.js 匯出的�
 const Role = db.role;
 
 // 呼叫 sync function 將會依 model 定義內容産生資料表，force 參數值為 true 將會重建已存在的資料表
-/*db.sequelize.sync({ force: true }).then(() => {
-    console.log('Drop and Resync Database with { force: true }');
-    initial();  // 産生資料表後，呼叫 initial function 為 roles table 新增三筆初始資料
+/*db.sequelize.sync({ force: false }).then(() => {
+    console.log('Drop and Resync Database with { force: false }');
+    //initial();  // 産生資料表後，呼叫 initial function 為 roles table 新增三筆初始資料
 }).catch((err) => {
     console.log(err);
 });

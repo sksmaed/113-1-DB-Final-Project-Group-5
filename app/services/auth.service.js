@@ -12,23 +12,17 @@ const signup = (req, res) => {
     // Save User to Database
     User.create({
         username: req.body.username,
-        password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString(),
+        phone: req.body.phone,
+        password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString()
     }).then(user => {
         if (req.body.roles) {
-            Role.findAll({
-                where: {
-                    name: {
-                        [Op.or]: req.body.roles
-                    }
-                }
-            }).then(roles => {
-                user.setRoles(roles).then(() => {
-                    res.send({ message: "User registered successfully!" });
-                });
+            let role_idx = req.body.roles == "user" ? 1 : 2;
+            user.setRoles(role_idx).then(() => {
+                res.send({ message: "User registered successfully!" });
             });
         } else {
             // user role = 1
-            user.setRoles([1]).then(() => {
+            user.setRoles(1).then(() => {
                 res.send({ message: "User registered successfully!" });
             });
         }
