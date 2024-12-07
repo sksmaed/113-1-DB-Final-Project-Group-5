@@ -13,7 +13,6 @@ export class EditExhService {
   constructor( private http: HttpClient) { }
 
   updateExh(exhibition: any): Observable<any> {
-    console.log(exhibition);
-    return this.http.put(API_URL + `update-exh/${exhibition.exh_id}`, { exhibition })
+    return this.http.put(API_URL + `update-exh/${exhibition.exh_id}`, exhibition)
   }
 }

@@ -19,9 +19,9 @@ import { MatTableModule } from '@angular/material/table';
 export class ExhibitionManagementComponent implements OnInit {
   filterForm: FormGroup = new FormGroup({
     year: new FormControl(''),
-      month: new FormControl(''),
-      hall: new FormControl(''),
-      organizer: new FormControl(''),
+    month: new FormControl(''),
+    room: new FormControl(''),
+    host: new FormControl(''),
   });
   exhibitions: any[] = [];
   selectedExhibition: any = null;
@@ -29,11 +29,19 @@ export class ExhibitionManagementComponent implements OnInit {
 
   constructor(private searchExhService: SearchExhService) { }
 
-  ngOnInit(): void { this.onSearch(); }
+  ngOnInit(): void { this.unlimitSearch(); }
+
+  unlimitSearch(): void {
+    const params = this.filterForm.value
+    this.searchExhService.findAll( ).subscribe((data) => {
+      console.log(data);
+      this.exhibitions = data;
+    });
+  }
 
   onSearch(): void {
     const params = this.filterForm.value
-    this.searchExhService.findAll().subscribe((data) => {
+    this.searchExhService.filterExh( params ).subscribe((data) => {
       console.log(data);
       this.exhibitions = data;
     });
@@ -48,12 +56,5 @@ export class ExhibitionManagementComponent implements OnInit {
       this.onSearch();
     }
     this.selectedExhibition = null;
-  }
-
-  onExhibitionUpdated(updatedExh: any): void {
-    const index = this.exhibitions.findIndex((exh) => exh.exh_id === updatedExh.exh_id);
-    if (index !== -1) {
-      this.exhibitions[index] = updatedExh; // 更新本地資料
-    }
   }
 }

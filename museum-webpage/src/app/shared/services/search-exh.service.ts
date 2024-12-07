@@ -12,6 +12,10 @@ export class SearchExhService {
 
   constructor( private http: HttpClient) { }
 
+  filterExh( params: any ): Observable<any> {
+    return this.http.get(API_URL + 'filter-exh', { params })
+  }
+
   findAll( ): Observable<any> {
     return this.http.get(API_URL + 'findall', { })
   }

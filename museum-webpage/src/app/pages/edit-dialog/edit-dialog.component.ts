@@ -24,7 +24,7 @@ import { EditExhService } from '../../shared/services/edit-exh.service';
         </label>
         <label>
           展廳：
-          <input formControlName="rname" />
+          <input formControlName="room" />
         </label>
         <label>
           舉辦單位：
