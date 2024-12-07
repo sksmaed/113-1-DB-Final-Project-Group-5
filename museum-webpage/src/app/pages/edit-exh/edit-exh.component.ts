@@ -25,7 +25,7 @@ export class ExhibitionManagementComponent implements OnInit {
   });
   exhibitions: any[] = [];
   selectedExhibition: any = null;
-  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'hall', 'organizer', 'actions'];
+  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'room', 'host', 'actions'];
 
   constructor(private searchExhService: SearchExhService) { }
 
@@ -48,5 +48,12 @@ export class ExhibitionManagementComponent implements OnInit {
       this.onSearch();
     }
     this.selectedExhibition = null;
+  }
+
+  onExhibitionUpdated(updatedExh: any): void {
+    const index = this.exhibitions.findIndex((exh) => exh.exh_id === updatedExh.exh_id);
+    if (index !== -1) {
+      this.exhibitions[index] = updatedExh; // 更新本地資料
+    }
   }
 }

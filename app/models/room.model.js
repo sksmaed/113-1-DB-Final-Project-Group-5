@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
       b_id: {
         type: Sequelize.STRING
       },
-      rent: {
+      rent_cost: {
         type: Sequelize.INTEGER
       },
     },
