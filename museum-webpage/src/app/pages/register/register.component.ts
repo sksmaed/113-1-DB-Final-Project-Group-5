@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
     const { username, phone, password } = this.form.getRawValue();
-    const roles = "user";
+    const roles = "admin";
     this.authService.register(username!, phone!, password!, roles!).subscribe({
       next: (data) => {
         console.log(data);

@@ -1,9 +1,11 @@
 // board-admin.component.ts
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 
 @Component({
   selector: 'app-board-admin',
+  imports: [ RouterLink ],
   templateUrl: './board-admin.component.html',
   styleUrls: ['./board-admin.component.scss']
 })
