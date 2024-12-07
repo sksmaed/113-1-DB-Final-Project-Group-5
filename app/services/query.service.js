@@ -5,7 +5,7 @@ const Host = db.host;
 
 const search = (req, res) => {
     Exhibtion.findAll({ 
-        attributes: ['exhName', 'start_date', 'end_date'],
+        attributes: ['exh_id', 'exhName', 'start_date', 'end_date'],
         include: [
             {
                 model: Host,

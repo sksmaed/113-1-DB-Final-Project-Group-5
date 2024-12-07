@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { EditExhService } from '../../shared/services/edit-exh.service';
 
 @Component({
   selector: 'app-edit-dialog',
@@ -23,11 +24,11 @@ import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
         </label>
         <label>
           展廳：
-          <input formControlName="hall" />
+          <input formControlName="rname" />
         </label>
         <label>
           舉辦單位：
-          <input formControlName="organizer" />
+          <input formControlName="host" />
         </label>
         <button type="submit">儲存</button>
         <button type="button" (click)="closeDialog()">取消</button>
@@ -38,8 +39,9 @@ import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 export class EditDialogComponent {
   @Input() exhibition: any;
   @Output() close = new EventEmitter<boolean>();
+  @Output() update = new EventEmitter<any>();
   editForm: FormGroup = new FormGroup({
-    year: new FormControl(''),
+    exh_id: new FormControl(''),
     exhName: new FormControl(''),
     start_date: new FormControl(''),
     end_date: new FormControl(''),
@@ -47,7 +49,7 @@ export class EditDialogComponent {
     host: new FormControl(''),
   });
 
-  constructor() { }
+  constructor(private editExhService: EditExhService) { }
 
   ngOnChanges(): void {
     if (this.exhibition) {
@@ -56,13 +58,12 @@ export class EditDialogComponent {
   }
 
   saveChanges(): void {
-    /*const updatedData = this.editForm.value;
+    const updatedExh = this.editForm.value;
 
-    this.http
-      .put(`http://localhost:5000/api/exhibitions/${this.exhibition.exh_id}`, updatedData)
-      .subscribe(() => {
+    this.editExhService.updateExh(updatedExh).subscribe((response) => {
+        this.update.emit(response);
         this.close.emit(true);
-      });*/
+      });
   }
 
   closeDialog(): void {
