@@ -68,7 +68,9 @@ export class LoginComponent implements OnInit {
 
   roloadPage(): void {
     this.submitted = false;
-    location.reload();
+    setTimeout(() => {
+      window.location.href = '/admin';
+    }, 800);
   }
 
   onReset(): void {
