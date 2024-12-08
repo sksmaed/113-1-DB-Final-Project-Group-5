@@ -9,37 +9,7 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-edit-dialog',
   imports: [MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   standalone: true,
-  template: `
-    <h2 mat-dialog-title>編輯展覽</h2>
-    <mat-dialog-content>
-      <form [formGroup]="editForm">
-        <mat-form-field appearance="fill">
-          <mat-label>名稱</mat-label>
-          <input matInput formControlName="exhName" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>開始日期</mat-label>
-          <input matInput type="date" formControlName="start_date" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>結束日期</mat-label>
-          <input matInput type="date" formControlName="end_date" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>展廳</mat-label>
-          <input matInput formControlName="room" />
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-          <mat-label>舉辦單位</mat-label>
-          <input matInput formControlName="host" />
-        </mat-form-field>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-      <button mat-button (click)="closeDialog()">取消</button>
-      <button mat-raised-button color="primary" (click)="saveChanges()">儲存</button>
-    </mat-dialog-actions>
-  `,
+  templateUrl: './edit-dialog.component.html'
 })
 export class EditDialogComponent {
   editForm: FormGroup = new FormGroup({

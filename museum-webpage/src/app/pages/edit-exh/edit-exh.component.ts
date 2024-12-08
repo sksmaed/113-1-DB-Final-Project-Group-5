@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-exh',
@@ -28,7 +29,7 @@ export class ExhibitionManagementComponent implements OnInit {
   selectedExhibition: any = null;
   displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'room', 'host', 'actions'];
 
-  constructor(private searchExhService: SearchExhService, private dialog: MatDialog) { }
+  constructor(private searchExhService: SearchExhService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void { this.unlimitSearch(); }
 
@@ -50,7 +51,7 @@ export class ExhibitionManagementComponent implements OnInit {
 
   openEditDialog(exhibition: any): void {
     const dialogRef = this.dialog.open(EditDialogComponent, {
-      width: '600px',
+      width: '800px',
       data: exhibition, // Pass the selected exhibition as dialog data
     });
 
@@ -69,5 +70,21 @@ export class ExhibitionManagementComponent implements OnInit {
       this.onSearch();
     }
     this.selectedExhibition = null;
+  }
+
+  viewVolunteers(element: any): void {
+    console.log('查看志工:', element);
+    // 導向到 /volunteer，並可傳遞參數
+    this.router.navigate(['/volunteer'], { queryParams: { exhibitionId: element.exh_id, exhName: element.exhName } });
+  }
+
+  viewSponsors(element: any): void {
+    console.log('查看贊助:', element);
+    // 實作 "查看贊助" 的邏輯
+  }
+
+  viewStaffAssignments(element: any): void {
+    console.log('查看職員分配:', element);
+    // 實作 "查看職員分配" 的邏輯
   }
 }

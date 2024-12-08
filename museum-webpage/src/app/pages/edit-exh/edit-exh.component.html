@@ -43,35 +43,46 @@
 
   <!-- 展覽表格 -->
   <table mat-table [dataSource]="exhibitions" class="mat-elevation-z8" *ngIf="exhibitions.length > 0">
+    <!-- 展覽名稱 -->
     <ng-container matColumnDef="exhName">
-      <th mat-header-cell *matHeaderCellDef> 展覽名稱 </th>
-      <td mat-cell *matCellDef="let element"> {{ element.exhName }} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-text"> 展覽名稱 </th>
+      <td mat-cell *matCellDef="let element" class="center-text"> {{ element.exhName }} </td>
     </ng-container>
 
+    <!-- 開始日期 -->
     <ng-container matColumnDef="start_date">
-      <th mat-header-cell *matHeaderCellDef> 開始日期 </th>
-      <td mat-cell *matCellDef="let element"> {{ element.start_date | date }} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-text"> 開始日期 </th>
+      <td mat-cell *matCellDef="let element" class="center-text"> {{ element.start_date | date }} </td>
     </ng-container>
 
+    <!-- 結束日期 -->
     <ng-container matColumnDef="end_date">
-      <th mat-header-cell *matHeaderCellDef> 結束日期 </th>
-      <td mat-cell *matCellDef="let element"> {{ element.end_date | date }} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-text"> 結束日期 </th>
+      <td mat-cell *matCellDef="let element" class="center-text"> {{ element.end_date | date }} </td>
     </ng-container>
 
+    <!-- 展廳 -->
     <ng-container matColumnDef="room">
-      <th mat-header-cell *matHeaderCellDef> 展廳 </th>
-      <td mat-cell *matCellDef="let element"> {{ element.room }} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-text"> 展廳 </th>
+      <td mat-cell *matCellDef="let element" class="center-text"> {{ element.room }} </td>
     </ng-container>
 
+    <!-- 舉辦單位 -->
     <ng-container matColumnDef="host">
-      <th mat-header-cell *matHeaderCellDef> 舉辦單位 </th>
-      <td mat-cell *matCellDef="let element"> {{ element.host }} </td>
+      <th mat-header-cell *matHeaderCellDef class="center-text"> 舉辦單位 </th>
+      <td mat-cell *matCellDef="let element" class="center-text"> {{ element.host }} </td>
     </ng-container>
 
+    <!-- 操作 -->
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef> 操作 </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-raised-button color="accent" (click)="openEditDialog(element)">編輯</button>
+      <th mat-header-cell *matHeaderCellDef class="center-text"> 操作 </th>
+      <td mat-cell *matCellDef="let element" class="center-text">
+        <div class="actions-wrapper">
+          <button mat-mini-button color="accent" (click)="openEditDialog(element)">編輯</button>
+          <button mat-mini-button color="accent" (click)="viewVolunteers(element)">查看志工</button>
+          <button mat-mini-button color="accent" (click)="viewSponsors(element)">查看贊助</button>
+          <button mat-mini-button color="accent" (click)="viewStaffAssignments(element)">查看職員分配</button>
+        </div>
       </td>
     </ng-container>
 

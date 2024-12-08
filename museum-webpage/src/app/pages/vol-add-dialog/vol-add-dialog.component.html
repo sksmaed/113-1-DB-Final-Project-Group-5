@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>新增志工紀錄</h2>
+
+<form [formGroup]="volunteerForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>志工編號</mat-label>
+      <input matInput formControlName="v_id" placeholder="輸入志工編號" />
+      <mat-error *ngIf="volunteerForm.get('v_id')?.hasError('required')">志工編號為必填欄位</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>志工姓名</mat-label>
+      <input matInput formControlName="v_name" placeholder="輸入志工姓名" />
+      <mat-error *ngIf="volunteerForm.get('v_name')?.hasError('required')">志工姓名為必填欄位</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>開始工作時間</mat-label>
+      <input matInput [matDatepicker]="startTimePicker" formControlName="start_time" placeholder="選擇開始工作時間" />
+      <mat-datepicker-toggle matSuffix [for]="startTimePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startTimePicker></mat-datepicker>
+      <mat-error *ngIf="volunteerForm.get('start_time')?.hasError('required')">開始時間為必填欄位</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>結束工作時間</mat-label>
+      <input matInput [matDatepicker]="endTimePicker" formControlName="end_time" placeholder="選擇結束工作時間" />
+      <mat-datepicker-toggle matSuffix [for]="endTimePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endTimePicker></mat-datepicker>
+      <mat-error *ngIf="volunteerForm.get('end_time')?.hasError('required')">結束時間為必填欄位</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>職位</mat-label>
+      <input matInput formControlName="duty" placeholder="輸入職位" />
+      <mat-error *ngIf="volunteerForm.get('duty')?.hasError('required')">職位為必填欄位</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="onClose()">取消</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="volunteerForm.invalid">新增</button>
+  </mat-dialog-actions>
+</form>

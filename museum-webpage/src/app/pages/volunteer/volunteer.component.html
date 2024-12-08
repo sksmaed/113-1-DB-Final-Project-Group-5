@@ -1,0 +1,52 @@
+<div class="volunteer-container">
+  <h1>查看志工名單</h1>
+  <h2>{{ exhibitionName }}</h2>
+
+  <button mat-raised-button color="primary" (click)="openAddVolunteerDialog()" class="add-volunteer-button">新增志工紀錄</button>
+  
+  <table mat-table [dataSource]="volunteers" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> 志工姓名 </th>
+      <td mat-cell *matCellDef="let element">
+        <div>
+          <strong style="font-size: 16px; margin-top: 12px; margin-bottom: 12px; display: block;">
+            {{ element.name }}
+          </strong>
+          <mat-accordion>
+            <mat-expansion-panel [disabled]="editingIndex === i || editingIndex !== null" *ngFor="let record of element.records; let i = index">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <ng-container *ngIf="editingIndex !== i">
+                    開始: {{ record.start_time }} 結束: {{ record.end_time }}
+                  </ng-container>
+                  <ng-container *ngIf="editingIndex === i">
+                    <input matInput [(ngModel)]="editableRecord.start_time" />
+                    <input matInput [(ngModel)]="editableRecord.end_time" />
+                  </ng-container>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+  
+              <div *ngIf="editingIndex !== i">
+                <p style="font-size: 14px">工作內容: {{ record.task }}</p>
+                <button mat-button color="accent" (click)="enableEdit(element.id, i)">編輯</button>
+                <button mat-button color="warn" (click)="deleteRecord(element.id, i)">刪除</button>
+              </div>
+  
+              <div *ngIf="editingIndex === i">
+                <mat-form-field>
+                  <mat-label>職位</mat-label>
+                  <input matInput [(ngModel)]="editableRecord.duty" />
+                </mat-form-field>
+                <button mat-button color="primary" (click)="saveEdit(element.id, i)">儲存</button>
+                <button mat-button color="warn" (click)="cancelEdit()">取消</button>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="['name']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name'];"></tr>
+  </table>  
+</div>

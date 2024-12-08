@@ -19,4 +19,8 @@ export class SearchExhService {
   findAll( ): Observable<any> {
     return this.http.get(API_URL + 'findall', { })
   }
+
+  getVolunteerByExhId( exh_id: any ): Observable<any> {
+    return this.http.get(API_URL + `find-vol/${exh_id}`)
+  }
 }

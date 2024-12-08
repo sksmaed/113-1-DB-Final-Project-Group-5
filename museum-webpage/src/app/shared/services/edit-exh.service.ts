@@ -15,4 +15,8 @@ export class EditExhService {
   updateExh(exhibition: any): Observable<any> {
     return this.http.put(API_URL + `update-exh/${exhibition.exh_id}`, exhibition)
   }
+
+  updateVolunteer(exh_id: any, volunteerId: string, startTime: any, record: any): Observable<any> {
+    return this.http.put(API_URL + `update-vol/${exh_id}`, {volunteerId, startTime, record})
+  }
 }
