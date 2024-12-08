@@ -21,3 +21,15 @@ button {
   padding: 4px 8px; /* 控制按鈕的大小 */
   min-width: unset; /* 移除 Material 的最小寬度限制 */
 }
+
+.center-text {
+  text-align: center;
+}
+
+.mat-cell div {
+  margin-bottom: 4px; /* 調整每行之間的間距 */
+}
+
+.mat-cell div:last-child {
+  margin-bottom: 0; /* 去除最後一行的間距 */
+}

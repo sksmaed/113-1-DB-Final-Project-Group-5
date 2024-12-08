@@ -29,28 +29,43 @@ const search = (req, res) => {
 
 const filterExhibitions = (req, res) => {
   const { year, month, room, host } = req.query;
-
-  // 建立篩選條件
   const whereConditions = {};
-  if (year) {
-    whereConditions.start_date = {
-      [Op.gte]: new Date(`${year}-01-01`),
-      [Op.lte]: new Date(`${year}-12-31`),
-    };
-  }
-  if (month) {
-    const startMonth = `${year}-${String(month).padStart(2, "0")}-01`;
-    const endMonth = new Date(startMonth);
-    endMonth.setMonth(endMonth.getMonth() + 1); // 下一個月的第一天
-    whereConditions.start_date = {
-      [Op.gte]: new Date(startMonth),
-      [Op.lt]: endMonth,
-    };
+  console.log(year, month);
+  if (year && year !== 'null') {
+    const startYear = new Date(`${year}-01-01`);
+    const endYear = new Date(`${year}-12-31`);
+
+    if (month && month !== 'null') {
+      // 若指定月份，計算月份的開始與結束時間
+      const startMonth = new Date(`${year}-${String(month).padStart(2, "0")}-01`);
+      const endMonth = new Date(startMonth);
+      endMonth.setMonth(endMonth.getMonth() + 1); // 下一個月的第一天
+
+      // 加入範圍條件，檢查展覽是否與該月份有交集
+      whereConditions[Op.and] = [
+        {
+          start_date: { [Op.lt]: endMonth }, // 開始時間早於該月結束
+        },
+        {
+          end_date: { [Op.gte]: startMonth }, // 結束時間晚於該月開始
+        },
+      ];
+    } else {
+      // 若僅指定年份，檢查展覽是否與該年份有交集
+      whereConditions[Op.and] = [
+        {
+          start_date: { [Op.lte]: endYear }, // 開始時間早於該年結束
+        },
+        {
+          end_date: { [Op.gte]: startYear }, // 結束時間晚於該年開始
+        },
+      ];
+    }
   }
 
-  // 加入展廳和舉辦單位的條件
+  // 加入展廳和主辦單位的條件
   const includeConditions = [];
-  if (room) {
+  if (room && room !== 'null') {
     includeConditions.push({
       model: Room,
       where: {
@@ -60,7 +75,7 @@ const filterExhibitions = (req, res) => {
       },
     });
   }
-  if (host) {
+  if (host && host !== 'null') {
     includeConditions.push({
       model: Host,
       where: {
@@ -283,5 +298,23 @@ const getStaffsByExhId = (req, res) => {
     });
 };
 
+const getStaffById = (req, res) => {
+  const { s_id } = req.params;
 
-module.exports = { search, filterExhibitions, getVolunteersByExhId, getSponsorsByExhId, getStaffsByExhId };
+  Staff.findOne({
+    where: { s_id }  // 根據 s_id 查詢職員
+  })
+  .then(staff => {
+    if (!staff) {
+      return res.status(404).json({ message: '職員未找到' });
+    }
+
+    res.status(200).json(staff);
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(500).json({ message: '無法取得職員資料', error: error.message });
+  });
+};
+
+module.exports = { search, filterExhibitions, getVolunteersByExhId, getSponsorsByExhId, getStaffsByExhId, getStaffById };

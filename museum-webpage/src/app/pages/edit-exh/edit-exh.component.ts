@@ -27,7 +27,7 @@ export class ExhibitionManagementComponent implements OnInit {
   });
   exhibitions: any[] = [];
   selectedExhibition: any = null;
-  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'room', 'host', 'actions'];
+  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'rooms', 'hosts', 'actions'];
 
   constructor(private searchExhService: SearchExhService, private dialog: MatDialog, private router: Router) { }
 
@@ -35,16 +35,20 @@ export class ExhibitionManagementComponent implements OnInit {
 
   unlimitSearch(): void {
     const params = this.filterForm.value
-    this.searchExhService.findAll( ).subscribe((data) => {
-      console.log(data);
-      this.exhibitions = data;
+    this.searchExhService.findAll( ).subscribe((data: any[]) => {
+      this.exhibitions = data.map(exhibition => ({
+        ...exhibition,
+        rooms: exhibition.rooms || [],
+        hosts: exhibition.hosts || [],
+      }));
+      console.log(this.exhibitions);
     });
   }
 
   onSearch(): void {
     const params = this.filterForm.value
+    console.log(params);
     this.searchExhService.filterExh( params ).subscribe((data) => {
-      console.log(data);
       this.exhibitions = data;
     });
   }
@@ -85,5 +89,9 @@ export class ExhibitionManagementComponent implements OnInit {
   viewStaffAssignments(element: any): void {
     console.log('查看職員分配:', element);
     this.router.navigate(['/staff-duty'], { queryParams: { exhibitionId: element.exh_id, exhName: element.exhName } });
+  }
+
+  navigateToAddExhibition(): void {
+    this.router.navigate(['/add-exh']);
   }
 }

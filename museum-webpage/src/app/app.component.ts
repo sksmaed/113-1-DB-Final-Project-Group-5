@@ -27,8 +27,7 @@ export class AppComponent {
       const user = this.tokenStorageService.getUser();
       this.roles = user.roles;
 
-      this.showAdminBoard = this.roles.includes('ADMIN'); // 判斷是否有管理者角色
-      this.showModeratorBoard = this.roles.includes('MODERATOR'); // 判斷是否有版主角色
+      this.showAdminBoard = this.roles.includes('ROLE_ADMIN'); // 判斷是否有管理者角色
 
       this.username = user.username;
     }

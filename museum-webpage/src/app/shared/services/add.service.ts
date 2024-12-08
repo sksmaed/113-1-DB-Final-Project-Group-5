@@ -12,6 +12,10 @@ export class AddService {
 
   constructor(private http: HttpClient) { }
 
+  addExhibition(exhbitionData: any): Observable<any> {
+    return this.http.post(API_URL + 'add-exh', exhbitionData);
+  }
+
   addVolunteerRecord(volunteerData: any): Observable<any> {
     return this.http.post(API_URL + 'add-vol', volunteerData);
   }
