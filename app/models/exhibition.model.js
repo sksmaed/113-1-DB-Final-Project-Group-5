@@ -1,5 +1,5 @@
 export default (sequelize, Sequelize) => {
-    const Exhibtion = sequelize.define("exhibition", {
+    const Exhibition = sequelize.define("exhibition", {
       exh_id: {
         type: Sequelize.STRING,
         primaryKey: true
@@ -18,5 +18,5 @@ export default (sequelize, Sequelize) => {
       tableName: "exhibition",
       timestamps: false
     });
-    return Exhibtion;
+    return Exhibition;
 };

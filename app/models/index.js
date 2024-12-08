@@ -47,4 +47,25 @@ db.exhHost = require("../models/exhHost.model.js")(sequelize, Sequelize);
 db.exhibition.belongsToMany(db.host, { through: db.exhHost, foreignKey: "exh_id" });
 db.host.belongsToMany(db.exhibition, { through: db.exhHost, foreignKey: "host_name" });
 
+db.volunteer = require("../models/volunteer.model.js")(sequelize, Sequelize);
+db.exhVolunteer = require("../models/exhVolunteer.model.js")(sequelize, Sequelize);
+db.exhibition.belongsToMany(db.volunteer, { through: db.exhVolunteer, foreignKey: "exh_id" });
+db.volunteer.belongsToMany(db.exhibition, { through: db.exhVolunteer, foreignKey: "v_id" });
+db.exhVolunteer.belongsTo(db.exhibition, { foreignKey: "exh_id" });
+db.exhVolunteer.belongsTo(db.volunteer, { foreignKey: "v_id" });
+
+db.sponsor = require("../models/sponsor.model.js")(sequelize, Sequelize);
+db.exhSponsor = require("../models/exhSponsor.model.js")(sequelize, Sequelize);
+db.exhibition.belongsToMany(db.sponsor, { through: db.exhSponsor, foreignKey: "exh_id" });
+db.sponsor.belongsToMany(db.exhibition, { through: db.exhSponsor, foreignKey: "spon_name" });
+db.exhSponsor.belongsTo(db.exhibition, { foreignKey: "exh_id" });
+db.exhSponsor.belongsTo(db.sponsor, { foreignKey: "spon_name" });
+
+db.staff = require("../models/staff.model.js")(sequelize, Sequelize);
+db.exhStaffDuty = require("./exhStaffDuty.model.js")(sequelize, Sequelize);
+db.exhibition.belongsToMany(db.staff, { through: db.exhStaffDuty, foreignKey: "exh_id" });
+db.staff.belongsToMany(db.exhibition, { through: db.exhStaffDuty, foreignKey: "s_id" });
+db.exhStaffDuty.belongsTo(db.exhibition, { foreignKey: "exh_id" });
+db.exhStaffDuty.belongsTo(db.staff, { foreignKey: "s_id" });
+
 module.exports = db;

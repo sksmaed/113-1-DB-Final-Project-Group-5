@@ -5,7 +5,9 @@ const cors = require("cors");
 const userRoute = require("./app/routes/user.routes");
 const authRoute = require("./app/routes/auth.routes");
 const queryRoute = require("./app/routes/query.routes");
+const addRoute = require('./app/routes/add.routes');
 const editRoute = require('./app/routes/edit.routes');
+const delRoute = require('./app/routes/del.routes');
 
 dotenv.config();
 var corsOptions = {
@@ -16,7 +18,9 @@ app.use(express.json());
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/search", queryRoute);
+app.use('/api/add', addRoute);
 app.use('/api/edit', editRoute);
+app.use('/api/del', delRoute);
 
 const PORT = process.env.PORT || 5000;  // port 預設為 5000 ，並可以在 .env 檔案中進行客製化 （如：PORT＝5001）
 app.listen(PORT, () => {

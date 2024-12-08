@@ -4,3 +4,20 @@
     gap: 10px;
   }
   
+/* 表格標頭置中 */
+.center-text {
+  text-align: center;
+}
+
+/* 調整按鈕大小並靠右 */
+.actions-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px; /* 按鈕之間的間距 */
+}
+
+button {
+  font-size: 12px;
+  padding: 4px 8px; /* 控制按鈕的大小 */
+  min-width: unset; /* 移除 Material 的最小寬度限制 */
+}
