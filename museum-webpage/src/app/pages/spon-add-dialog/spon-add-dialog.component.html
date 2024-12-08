@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>新增贊助商紀錄</h2>
+
+<form [formGroup]="sponsorForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>贊助商名</mat-label>
+      <input matInput formControlName="spon_name" placeholder="輸入贊助商名" />
+      <mat-error *ngIf="sponsorForm.get('spon_name')?.hasError('required')">贊助商名為必填欄位</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>日期</mat-label>
+      <input matInput [matDatepicker]="datePicker" formControlName="date" placeholder="選擇日期" />
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+      <mat-error *ngIf="sponsorForm.get('date')?.hasError('required')">日期為必填欄位</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>贊助金額</mat-label>
+      <input matInput formControlName="amount" placeholder="輸入金額" />
+      <mat-error *ngIf="sponsorForm.get('amount')?.hasError('required')">金額為必填欄位</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button (click)="onClose()">取消</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="sponsorForm.invalid">新增</button>
+  </mat-dialog-actions>
+</form>

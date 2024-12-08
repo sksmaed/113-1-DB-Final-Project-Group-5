@@ -74,17 +74,16 @@ export class ExhibitionManagementComponent implements OnInit {
 
   viewVolunteers(element: any): void {
     console.log('查看志工:', element);
-    // 導向到 /volunteer，並可傳遞參數
     this.router.navigate(['/volunteer'], { queryParams: { exhibitionId: element.exh_id, exhName: element.exhName } });
   }
 
   viewSponsors(element: any): void {
     console.log('查看贊助:', element);
-    // 實作 "查看贊助" 的邏輯
+    this.router.navigate(['/sponsor'], { queryParams: { exhibitionId: element.exh_id, exhName: element.exhName } });
   }
 
   viewStaffAssignments(element: any): void {
     console.log('查看職員分配:', element);
-    // 實作 "查看職員分配" 的邏輯
+    this.router.navigate(['/staff-duty'], { queryParams: { exhibitionId: element.exh_id, exhName: element.exhName } });
   }
 }

@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { AddVolunteerDialogComponent } from '../vol-add-dialog/vol-add-dialog.component';
+import { AddStaffDutyDialogComponent } from '../staff-duty-add-dialog/staff-duty-add-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddService } from '../../shared/services/add.service';
 import { SearchExhService } from '../../shared/services/search-exh.service';
@@ -13,27 +13,25 @@ import { DelService } from '../../shared/services/del.service';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 
-interface Volunteer {
+interface Staff {
   id: string;
   name: string;
   records: {
-    start_time: string;
-    end_time: string;
     duty: string;
   }[];
 }
 
 
 @Component({
-  selector: 'app-volunteer',
+  selector: 'app-staff-duty',
   imports: [CommonModule, MatTableModule, MatExpansionModule, MatButtonModule, FormsModule, MatInputModule],
-  templateUrl: './volunteer.component.html',
-  styleUrls: ['./volunteer.component.scss'],
+  templateUrl: './staff-duty.component.html',
+  styleUrls: ['./staff-duty.component.scss'],
 })
-export class VolunteerComponent implements OnInit {
+export class StaffDutyComponent implements OnInit {
   exhibitionId: string | null = null;
   exhibitionName: string = '';
-  volunteers: Volunteer[] = [];
+  staffs: Staff[] = [];
 
   constructor(private dialog: MatDialog, private route: ActivatedRoute, private editExhService: EditExhService,
               private searchExhService: SearchExhService, private addService: AddService, private delService: DelService) {}
@@ -43,79 +41,71 @@ export class VolunteerComponent implements OnInit {
       this.exhibitionId = params['exhibitionId'] || null;
     if (this.exhibitionId) {
       this.exhibitionName = params['exhName'];
-      this.loadVolunteers();
+      this.loadStaffs();
     } else {
       console.warn('展覽 ID 未提供');
       this.exhibitionName = '展覽資料未提供';
     }
   }); }
 
-  loadVolunteers(): void {
-    this.searchExhService.getVolunteerByExhId(this.exhibitionId).subscribe({
+  loadStaffs(): void {
+    this.searchExhService.getStaffByExhId(this.exhibitionId).subscribe({
       next: (data) => {
-        // 提取志工資料
-        if (data[0].volunteers && Array.isArray(data[0].volunteers)) {
-          this.volunteers = data[0].volunteers.map((volunteer: any) => ({
-            id: volunteer.v_id,
-            name: volunteer.v_name,
-            records: volunteer.records.map((record: any) => ({
-              start_time: record.start_time,
-              end_time: record.end_time,
+        if (data[0].staffs && Array.isArray(data[0].staffs)) {
+          this.staffs = data[0].staffs.map((staff: any) => ({
+            id: staff.s_id,
+            name: staff.s_name,
+            records: staff.records.map((record: any) => ({
               duty: record.duty,
             })),
           }));
         } else {
-          this.volunteers = [];
-          console.warn("未找到志工資料");
+          this.staffs = [];
+          console.warn("未找到職員資料");
         }
   
-        console.log("處理後的志工資料:", this.volunteers);
+        console.log("處理後的職員資料:", this.staffs);
       },
       error: (err) => {
-        console.error("無法載入志工資料", err);
-        this.volunteers = [];
-        this.exhibitionName = "載入志工資料時發生錯誤";
+        console.error("無法載入職員資料", err);
+        this.staffs = [];
+        this.exhibitionName = "載入職員資料時發生錯誤";
       },
     });
   }
 
   editingIndex: number | null = null;
   editableRecord: any = null;
-  originalStartTime: string | null = null;
 
-  enableEdit(volunteerId: string, recordIndex: number): void {
+  enableEdit(staffId: string, recordIndex: number): void {
     this.editingIndex = recordIndex;
-    const volunteer = this.volunteers.find((v) => v.id === volunteerId);
-    if (volunteer) {
-      this.editableRecord = { ...volunteer.records[recordIndex] };
-      this.originalStartTime = volunteer.records[recordIndex].start_time; // 保存原本的開始時間
+    const staff = this.staffs.find((s) => s.id === staffId);
+    if (staff) {
+      this.editableRecord = { ...staff.records[recordIndex] };
     }
   }
   
   cancelEdit(): void {
     this.editingIndex = null;
     this.editableRecord = null;
-    this.originalStartTime = null;
   }
   
-  saveEdit(volunteerId: string, recordIndex: number): void {
-    const volunteer = this.volunteers.find((v) => v.id === volunteerId);
-    if (volunteer) {
+  saveEdit(staffId: string, recordIndex: number): void {
+    const staff = this.staffs.find((s) => s.id === staffId);
+    if (staff) {
       const updatedRecord = { ...this.editableRecord };
-  
+
       // 呼叫 API 更新資料
-      this.editExhService.updateVolunteer(
+      this.editExhService.updateStaffDuty(
         this.exhibitionId,
-        volunteerId,
-        this.originalStartTime, // 傳遞原本的開始時間作為條件
+        staffId,
         updatedRecord
       ).subscribe(
         (response) => {
           console.log('更新成功:', response);
-          volunteer.records[recordIndex] = updatedRecord; // 更新本地資料
+          staff.records[recordIndex] = updatedRecord; // 更新本地資料
           this.editingIndex = null;
           this.editableRecord = null;
-          this.originalStartTime = null;
         },
         (error) => {
           console.error('更新失敗:', error);
@@ -124,21 +114,19 @@ export class VolunteerComponent implements OnInit {
     }
   }
   
-  deleteRecord(volunteerId: string, recordIndex: number): void {
-    const volunteer = this.volunteers.find((v) => v.id === volunteerId);
-    if (volunteer) {
-      const volunteerId = volunteer.id;
-      const startTime = volunteer.records[recordIndex].start_time;
+  deleteRecord(staffId: string, recordIndex: number): void {
+    const staff = this.staffs.find((v) => v.id === staffId);
+    if (staff) {
+      const staffId = staff.id;
   
       // 呼叫 API 刪除資料
-      this.delService.deleteVolunteer(
+      this.delService.deleteStaffDuty(
         this.exhibitionId,
-        volunteerId,
-        startTime
+        staffId,
       ).subscribe(
         (response) => {
           console.log('刪除成功:', response);
-          volunteer.records.splice(recordIndex, 1); // 本地移除資料
+          staff.records.splice(recordIndex, 1); // 本地移除資料
         },
         (error) => {
           console.error('刪除失敗:', error);
@@ -148,8 +136,8 @@ export class VolunteerComponent implements OnInit {
   }  
 
   // 打開新增志工紀錄的彈跳視窗
-  openAddVolunteerDialog(): void {
-    const dialogRef = this.dialog.open(AddVolunteerDialogComponent, {
+  openAddStaffDialog(): void {
+    const dialogRef = this.dialog.open(AddStaffDutyDialogComponent, {
       data: { exh_id: this.exhibitionId }
     });
 
@@ -157,14 +145,14 @@ export class VolunteerComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // 呼叫 API 新增志工紀錄
-        this.addService.addVolunteerRecord(result).subscribe(
+        this.addService.addStaffDutyRecord(result).subscribe(
           (data) => {
-            console.log("志工紀錄已成功新增", data);
-            this.volunteers.push(data);
-            this.loadVolunteers();
+            console.log("職員紀錄已成功新增", data);
+            this.staffs.push(data);
+            this.loadStaffs();
           },
           (err) => {
-            console.error("無法新增志工紀錄", err);
+            console.error("無法新增職員紀錄", err);
           }
         );
       }

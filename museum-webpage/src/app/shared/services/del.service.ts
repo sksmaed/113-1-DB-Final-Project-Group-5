@@ -21,4 +21,16 @@ export class DelService {
       body: { volunteerId, startTime },
     });
   }
+
+  deleteSponsor(exh_id: any, sponName: string, date: any): Observable<any> {
+    return this.http.delete(API_URL + `del-spon/${exh_id}`, {
+      body: { sponName, date },
+    });
+  }
+
+  deleteStaffDuty(exh_id: any, s_id: string): Observable<any> {
+    return this.http.delete(API_URL + `del-staff-duty/${exh_id}`, {
+      body: { s_id },
+    });
+  }
 }

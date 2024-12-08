@@ -27,14 +27,14 @@
               </mat-expansion-panel-header>
   
               <div *ngIf="editingIndex !== i">
-                <p style="font-size: 14px">工作內容: {{ record.task }}</p>
+                <p style="font-size: 14px">工作內容: {{ record.duty }}</p>
                 <button mat-button color="accent" (click)="enableEdit(element.id, i)">編輯</button>
                 <button mat-button color="warn" (click)="deleteRecord(element.id, i)">刪除</button>
               </div>
   
               <div *ngIf="editingIndex === i">
                 <mat-form-field>
-                  <mat-label>職位</mat-label>
+                  <mat-label>工作內容</mat-label>
                   <input matInput [(ngModel)]="editableRecord.duty" />
                 </mat-form-field>
                 <button mat-button color="primary" (click)="saveEdit(element.id, i)">儲存</button>

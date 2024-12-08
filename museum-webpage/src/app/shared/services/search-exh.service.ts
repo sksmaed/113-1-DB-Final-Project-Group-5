@@ -23,4 +23,12 @@ export class SearchExhService {
   getVolunteerByExhId( exh_id: any ): Observable<any> {
     return this.http.get(API_URL + `find-vol/${exh_id}`)
   }
+
+  getSponsorByExhId( exh_id: any ): Observable<any> {
+    return this.http.get(API_URL + `find-spon/${exh_id}`)
+  }
+
+  getStaffByExhId( exh_id: any ): Observable<any> {
+    return this.http.get(API_URL + `find-staff/${exh_id}`)
+  }
 }

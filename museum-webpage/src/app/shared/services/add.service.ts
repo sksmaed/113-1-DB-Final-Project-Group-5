@@ -15,4 +15,12 @@ export class AddService {
   addVolunteerRecord(volunteerData: any): Observable<any> {
     return this.http.post(API_URL + 'add-vol', volunteerData);
   }
+
+  addSponsorRecord(sponsorData: any): Observable<any> {
+    return this.http.post(API_URL + 'add-spon', sponsorData);
+  }
+
+  addStaffDutyRecord(staffDutyData: any): Observable<any> {
+    return this.http.post(API_URL + 'add-staff-duty', staffDutyData);
+  }
 }
