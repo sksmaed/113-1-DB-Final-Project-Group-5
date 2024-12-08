@@ -1,45 +1,47 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { EditExhService } from '../../shared/services/edit-exh.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-edit-dialog',
-  imports: [ CommonModule, ReactiveFormsModule ],
+  imports: [MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  standalone: true,
   template: `
-    <div *ngIf="exhibition">
-      <h2>編輯展覽</h2>
-      <form [formGroup]="editForm" (ngSubmit)="saveChanges()">
-        <label>
-          名稱：
-          <input formControlName="exhName" />
-        </label>
-        <label>
-          開始日期：
-          <input type="date" formControlName="start_date" />
-        </label>
-        <label>
-          結束日期：
-          <input type="date" formControlName="end_date" />
-        </label>
-        <label>
-          展廳：
-          <input formControlName="room" />
-        </label>
-        <label>
-          舉辦單位：
-          <input formControlName="host" />
-        </label>
-        <button type="submit">儲存</button>
-        <button type="button" (click)="closeDialog()">取消</button>
+    <h2 mat-dialog-title>編輯展覽</h2>
+    <mat-dialog-content>
+      <form [formGroup]="editForm">
+        <mat-form-field appearance="fill">
+          <mat-label>名稱</mat-label>
+          <input matInput formControlName="exhName" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>開始日期</mat-label>
+          <input matInput type="date" formControlName="start_date" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>結束日期</mat-label>
+          <input matInput type="date" formControlName="end_date" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>展廳</mat-label>
+          <input matInput formControlName="room" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>舉辦單位</mat-label>
+          <input matInput formControlName="host" />
+        </mat-form-field>
       </form>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="closeDialog()">取消</button>
+      <button mat-raised-button color="primary" (click)="saveChanges()">儲存</button>
+    </mat-dialog-actions>
   `,
 })
 export class EditDialogComponent {
-  @Input() exhibition: any;
-  @Output() close = new EventEmitter<boolean>();
-  @Output() update = new EventEmitter<any>();
   editForm: FormGroup = new FormGroup({
     exh_id: new FormControl(''),
     exhName: new FormControl(''),
@@ -49,24 +51,24 @@ export class EditDialogComponent {
     host: new FormControl(''),
   });
 
-  constructor(private editExhService: EditExhService) { }
-
-  ngOnChanges(): void {
-    if (this.exhibition) {
-      this.editForm.patchValue(this.exhibition);
+  constructor(
+    public dialogRef: MatDialogRef<EditDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any = undefined, // Initialize as undefined
+    private editExhService: EditExhService
+  ) {
+    if (this.data) {
+      this.editForm.patchValue(this.data); // Populate the form with data if available
     }
   }
 
   saveChanges(): void {
     const updatedExh = this.editForm.value;
-
     this.editExhService.updateExh(updatedExh).subscribe((response) => {
-        this.update.emit(response);
-        this.close.emit(true);
-      });
+      this.dialogRef.close(response);
+    });
   }
 
   closeDialog(): void {
-    this.close.emit(false);
+    this.dialogRef.close();
   }
 }

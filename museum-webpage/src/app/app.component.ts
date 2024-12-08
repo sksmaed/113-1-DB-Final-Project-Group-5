@@ -8,7 +8,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [RouterOutlet, RouterLink, CommonModule]
+  imports: [RouterOutlet, RouterLink, CommonModule],
+  standalone: true
 })
 export class AppComponent {
   private roles: string[] = [];

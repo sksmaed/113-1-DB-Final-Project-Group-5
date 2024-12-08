@@ -8,10 +8,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit-exh',
-  imports: [CommonModule, ReactiveFormsModule, EditDialogComponent, MatFormFieldModule, 
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, 
     MatSelectModule, MatInputModule, MatButtonModule, MatTableModule],
   templateUrl: './edit-exh.component.html',
   styleUrl: './edit-exh.component.scss'
@@ -27,7 +28,7 @@ export class ExhibitionManagementComponent implements OnInit {
   selectedExhibition: any = null;
   displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'room', 'host', 'actions'];
 
-  constructor(private searchExhService: SearchExhService) { }
+  constructor(private searchExhService: SearchExhService, private dialog: MatDialog) { }
 
   ngOnInit(): void { this.unlimitSearch(); }
 
@@ -48,7 +49,19 @@ export class ExhibitionManagementComponent implements OnInit {
   }
 
   openEditDialog(exhibition: any): void {
-    this.selectedExhibition = exhibition;
+    const dialogRef = this.dialog.open(EditDialogComponent, {
+      width: '600px',
+      data: exhibition, // Pass the selected exhibition as dialog data
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Exhibition updated successfully:', result);
+        this.onSearch(); // Reload exhibitions after successful update
+      } else {
+        console.log('Edit dialog closed without changes');
+      }
+    });
   }
 
   onDialogClose(updated: boolean): void {

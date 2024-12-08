@@ -83,5 +83,6 @@
 </div>
 
 <!-- 編輯彈跳視窗 -->
-<app-edit-dialog [exhibition]="selectedExhibition" (close)="onDialogClose($event)">
-</app-edit-dialog>
+<td mat-cell *matCellDef="let element">
+  <button mat-raised-button color="accent" (click)="openEditDialog(element)">編輯</button>
+</td>
