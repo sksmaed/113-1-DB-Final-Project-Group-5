@@ -22,12 +22,14 @@ export class ExhibitionManagementComponent implements OnInit {
   filterForm: FormGroup = new FormGroup({
     year: new FormControl(''),
     month: new FormControl(''),
+    exhName: new FormControl(''),
+    building: new FormControl(''),
     room: new FormControl(''),
     host: new FormControl(''),
   });
   exhibitions: any[] = [];
   selectedExhibition: any = null;
-  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'rooms', 'hosts', 'actions'];
+  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'b_name', 'rooms', 'hosts', 'actions'];
 
   constructor(private searchExhService: SearchExhService, private dialog: MatDialog, private router: Router) { }
 
@@ -47,9 +49,9 @@ export class ExhibitionManagementComponent implements OnInit {
 
   onSearch(): void {
     const params = this.filterForm.value
-    console.log(params);
     this.searchExhService.filterExh( params ).subscribe((data) => {
       this.exhibitions = data;
+      console.log(this.exhibitions);
     });
   }
 

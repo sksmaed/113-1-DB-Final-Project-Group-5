@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-    const exhRoom = sequelize.define("exhibition_room", {
-      exh_id: {
+    const ticketAvail = sequelize.define("ticket_avail", {
+      t_id: {
         type: Sequelize.STRING,
         primaryKey: true
       },
@@ -10,9 +10,9 @@ module.exports = (sequelize, Sequelize) => {
       }
     },
     {
-      tableName: "exhibition_room",
+      tableName: "ticket_avail",
       timestamps: false,
     });
-    return exhRoom;
+    return ticketAvail;
   };
   

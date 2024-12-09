@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppSettings } from '../helpers/appSettings';
 
@@ -12,12 +12,16 @@ export class SearchExhService {
 
   constructor( private http: HttpClient) { }
 
+  findAll ( ): Observable<any> {
+    return this.http.get(API_URL + 'find-all', { })
+  }
+
   filterExh( params: any ): Observable<any> {
     return this.http.get(API_URL + 'filter-exh', { params })
   }
 
-  findAll( ): Observable<any> {
-    return this.http.get(API_URL + 'findall', { })
+  findExhUser( params: any ): Observable<any> {
+    return this.http.get(API_URL + 'find-exh-user', { params })
   }
 
   getVolunteerByExhId( exh_id: any ): Observable<any> {
@@ -34,5 +38,9 @@ export class SearchExhService {
 
   getStaffById( s_id: any ): Observable<any> {
     return this.http.get(API_URL + `find-staff/${s_id}`)
+  }
+
+  getTicket( params: any ):  Observable<any> {
+    return this.http.get(API_URL + 'find-ticket', { params: params });
   }
 }

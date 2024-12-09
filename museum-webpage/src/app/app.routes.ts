@@ -11,6 +11,8 @@ import { VolunteerComponent } from './pages/volunteer/volunteer.component';
 import { SponsorComponent } from './pages/sponsor/sponsor.component';
 import { StaffDutyComponent } from './pages/staff-duty/staff-duty.component';
 import { AddExhibitionComponent } from './pages/add-exhibition/add-exhibition.component';
+import { SearchTicketComponent } from './pages/search-ticket/search-ticket.component';
+import { EditTicketComponent } from './pages/edit-ticket/edit-ticket.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
@@ -20,10 +22,12 @@ export const routes: Routes = [
     { path: "profile", component: ProfileComponent },
     { path: "user", component: BoardUserComponent },
     { path: "admin", component: BoardAdminComponent },
-    { path: "search", component: SearchExhComponent },
+    { path: "search-exh", component: SearchExhComponent },
     { path: "edit-exh", component: ExhibitionManagementComponent },
     { path: "volunteer", component: VolunteerComponent },
     { path: "sponsor", component: SponsorComponent },
     { path: "staff-duty", component: StaffDutyComponent },
     { path: "add-exh", component: AddExhibitionComponent },
+    { path: "search-ticket", component: SearchTicketComponent },
+    { path: "edit-ticket", component: EditTicketComponent },
 ];

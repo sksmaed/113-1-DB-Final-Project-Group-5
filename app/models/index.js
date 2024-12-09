@@ -16,6 +16,7 @@ const sequelize = new Sequelize(                    // 由資料庫連結設定�
     }
   }
 );
+
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
@@ -36,11 +37,33 @@ db.user.belongsToMany(db.role, {
 });
 db.ROLES = ["user", "admin"];
 
-db.exhibition = require("../models/exhibition.model.js").default(sequelize, Sequelize);
+db.identity = require("../models/identity.model.js")(sequelize, Sequelize);
+
+db.ticket = require("../models/ticket.model.js")(sequelize, Sequelize);
+db.ticket.belongsTo(db.identity, { foreignKey: "iden_name" });
+db.identity.hasMany(db.ticket, { foreignKey: 'iden_name' });
+
+db.transaction = require("../models/transaction.model.js")(sequelize, Sequelize);
+db.transaction.belongsTo(db.ticket, { foreignKey: "t_id" });
+db.ticket.hasMany(db.transaction, { foreignKey: 't_id' });
+
+db.building = require("../models/building.model.js")(sequelize, Sequelize);
+
+db.exhibition = require("../models/exhibition.model.js")(sequelize, Sequelize);
 db.room = require("../models/room.model.js")(sequelize, Sequelize);
 db.exhRoom = require("../models/exhRoom.model.js")(sequelize, Sequelize);
 db.exhibition.belongsToMany(db.room, { through: db.exhRoom, foreignKey: "exh_id" });
 db.room.belongsToMany(db.exhibition, { through: db.exhRoom, foreignKey: "r_id" });
+
+db.ticketAvail = require("../models/ticketAvail.model.js")(sequelize, Sequelize);
+db.ticket.belongsToMany(db.room, { through: db.ticketAvail, foreignKey: "t_id" });
+db.room.belongsToMany(db.ticket, { through: db.ticketAvail, foreignKey: "r_id" });
+
+db.room.belongsTo(db.building, { foreignKey: "b_id" });
+db.building.hasMany(db.room, { foreignKey: 'b_id' });
+
+db.roomState = require("../models/roomState.model.js")(sequelize, Sequelize);
+db.roomState.belongsTo(db.room, { foreignKey: "r_id" });
 
 db.host = require("../models/host.model.js")(sequelize, Sequelize);
 db.exhHost = require("../models/exhHost.model.js")(sequelize, Sequelize);

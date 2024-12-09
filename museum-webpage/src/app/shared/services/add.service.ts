@@ -27,4 +27,8 @@ export class AddService {
   addStaffDutyRecord(staffDutyData: any): Observable<any> {
     return this.http.post(API_URL + 'add-staff-duty', staffDutyData);
   }
+
+  addTransaction(tranData: any): Observable<any> {
+    return this.http.post(API_URL + 'add-tran', tranData);
+  }
 }

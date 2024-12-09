@@ -7,21 +7,29 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-search-exh',
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatInputModule, MatButtonModule, MatTableModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule,
+     MatInputModule, MatButtonModule, MatTableModule, MatDatepickerModule],
+  providers: [
+    provideNativeDateAdapter()
+  ],
   templateUrl: './search-exh.component.html',
   styleUrl: './search-exh.component.scss'
 })
 export class SearchExhComponent implements OnInit {
   searchForm: FormGroup = new FormGroup({
     isActive: new FormControl(''),
-    category: new FormControl(''),
-    hall: new FormControl(''),
-  });;
+    usage: new FormControl(''),
+    date: new FormControl(''),
+    exhName: new FormControl(''),
+    building: new FormControl(''),
+  });
   exhibitions: any[] = [];
-  displayedColumns: string[] = ['exhName', 'start_date', 'end_date'];
+  displayedColumns: string[] = ['exhName', 'start_date', 'end_date', 'building', 'rooms', 'hosts'];
 
   constructor(private formBuilder: FormBuilder, 
     private searchExhService: SearchExhService) { }
@@ -30,7 +38,8 @@ export class SearchExhComponent implements OnInit {
 
   onSearch(): void {
     const params = this.searchForm.value
-    this.searchExhService.findAll().subscribe((data) => {
+    console.log(params);
+    this.searchExhService.findExhUser( params ).subscribe((data) => {
       console.log(data);
       this.exhibitions = data;
     });

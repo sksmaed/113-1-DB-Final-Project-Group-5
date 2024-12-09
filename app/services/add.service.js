@@ -8,6 +8,7 @@ const exhHost= db.exhHost;
 const Volunteer = db.volunteer;
 const Sponsor = db.sponsor;
 const Staff = db.staff;
+const Transaction = db.transaction;
 const VolunteerWork = db.exhVolunteer;
 const ExhSponsor = db.exhSponsor;
 const ExhStaffDuty = db.exhStaffDuty;
@@ -216,4 +217,36 @@ const addStaffDutyRecord = (req, res) => {
   });
 };
 
-module.exports = { addExhibition, addVolunteerRecord, addSponsorRecord, addStaffDutyRecord };
+const addTransaction = (req, res) => {
+  const { t_id, c_phone, payment_method, amount } = req.body;  
+
+  if (!t_id || !c_phone || !payment_method || !amount ) {
+    return res.status(400).send({ message: "請提供所有必要的參數 (t_id, c_phone, payment_method, amount)" });
+  } 
+
+  const tran_id = generateId('TR');
+  const date = new Date().toISOString();
+
+  Transaction.create({
+      tran_id,
+      c_phone,
+      date,
+      payment_method,
+      t_id,
+      amount
+  })
+  .then((response) => {
+    // 回傳成功訊息和新增的資料
+    res.status(201).send({
+      message: "職員工作任務紀錄已成功新增",
+      response,
+    });
+  }).catch((err) => {
+    console.error(err);
+    res.status(500).send({
+      message: "伺服器錯誤，無法新增職員工作任務紀錄",
+    });
+  });
+};
+
+module.exports = { addExhibition, addVolunteerRecord, addSponsorRecord, addStaffDutyRecord, addTransaction };

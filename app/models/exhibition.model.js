@@ -1,4 +1,4 @@
-export default (sequelize, Sequelize) => {
+module.exports = (sequelize, Sequelize) => {
     const Exhibition = sequelize.define("exhibition", {
       exh_id: {
         type: Sequelize.STRING,
