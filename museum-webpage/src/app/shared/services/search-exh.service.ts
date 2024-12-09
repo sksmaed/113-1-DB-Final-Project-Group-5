@@ -29,6 +29,10 @@ export class SearchExhService {
   }
 
   getStaffByExhId( exh_id: any ): Observable<any> {
-    return this.http.get(API_URL + `find-staff/${exh_id}`)
+    return this.http.get(API_URL + `find-staff-exh/${exh_id}`)
+  }
+
+  getStaffById( s_id: any ): Observable<any> {
+    return this.http.get(API_URL + `find-staff/${s_id}`)
   }
 }

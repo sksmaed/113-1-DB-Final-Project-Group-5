@@ -2,6 +2,7 @@ const db = require("../models");
 const Exhibition = db.exhibition;
 const Room = db.room;
 const Host = db.host;
+const Staff = db.staff;
 const VolunteerWork = db.exhVolunteer;
 const ExhSponsor = db.exhSponsor;
 const ExhStaffDuty = db.exhStaffDuty;
@@ -142,4 +143,39 @@ const updateStaffDuty = (req, res) => {
   });
 };
 
-module.exports = { updateExhibition, updateVolunteer, updateSponsor, updateStaffDuty };
+const updateStaff = (req, res) => {
+  const { s_id } = req.params;  // 從路徑參數中取得職員ID
+  const { s_name, position, contract_start_date } = req.body;  // 從請求體中取得要更新的資料
+  console.log(s_id, s_name);
+
+  // 查詢職員資料
+  Staff.findOne({
+    where: { s_id }  // 根據 s_id 查詢職員
+  })
+  .then(staff => {
+    if (!staff) {
+      return res.status(404).json({ message: '職員未找到' });
+    }
+
+    // 更新職員資料
+    staff.s_name = s_name || staff.s_name;
+    staff.position = position || staff.position;
+    staff.contract_start_date = contract_start_date || staff.contract_start_date;
+
+    // 保存更新後的職員資料
+    staff.save()
+      .then(updatedStaff => {
+        res.status(200).json(updatedStaff);  // 回傳更新後的職員資料
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).json({ message: '無法更新職員資料', error: error.message });
+      });
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(500).json({ message: '無法取得職員資料', error: error.message });
+  });
+};
+
+module.exports = { updateExhibition, updateVolunteer, updateSponsor, updateStaffDuty, updateStaff };

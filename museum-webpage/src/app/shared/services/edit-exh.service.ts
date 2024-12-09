@@ -28,4 +28,8 @@ export class EditExhService {
   updateStaffDuty(exh_id: any, s_id: string, record: any): Observable<any> {
     return this.http.put(API_URL + `update-staff-duty/${exh_id}`, {s_id, record})
   }
+
+  updateStaff(s_id: any, record: any): Observable<any> {
+    return this.http.put(API_URL + `update-staff/${s_id}`, record)
+  }
 }

@@ -1,0 +1,62 @@
+<div>
+  <h1>新增展覽</h1>
+
+  <form [formGroup]="exhibitionForm" (ngSubmit)="onSubmit()">
+    <!-- 展覽名稱 -->
+    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+      <mat-label>展覽名稱</mat-label>
+      <input matInput formControlName="exhName" placeholder="輸入展覽名稱" />
+    </mat-form-field>
+
+    <!-- 開始時間 -->
+    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+      <mat-label>開始時間</mat-label>
+      <input matInput formControlName="start_date" [matDatepicker]="startPicker" placeholder="選擇開始時間" />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- 結束時間 -->
+    <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+      <mat-label>結束時間</mat-label>
+      <input matInput formControlName="end_date" [matDatepicker]="endPicker" placeholder="選擇結束時間" />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- 展廳 -->
+    <h3>展廳</h3>
+    <div formArrayName="rooms">
+      <div *ngFor="let room of roomControls.controls; let i = index" style="display: flex; align-items: center; margin-bottom: 8px;">
+        <mat-form-field appearance="fill" style="flex: 1; margin-right: 16px;">
+          <mat-label>展廳名稱</mat-label>
+          <input matInput [formControlName]="i" placeholder="輸入展廳名稱" />
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="removeRoom(i)" type="button">
+          <mat-icon>remove</mat-icon>
+        </button>
+      </div>
+    </div>
+    <button mat-stroked-button color="primary" (click)="addRoom()" type="button" style="margin-bottom: 24px;">+ 新增展廳</button>
+
+    <!-- 主辦單位 -->
+    <h3>主辦單位</h3>
+    <div formArrayName="hosts">
+      <div *ngFor="let host of hostControls.controls; let i = index" style="display: flex; align-items: center; margin-bottom: 8px;">
+        <mat-form-field appearance="fill" style="flex: 1; margin-right: 16px;">
+          <mat-label>主辦單位名稱</mat-label>
+          <input matInput [formControlName]="i" placeholder="輸入主辦單位名稱" />
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="removeHost(i)" type="button">
+          <mat-icon>remove</mat-icon>
+        </button>
+      </div>
+    </div>
+    <button mat-stroked-button color="primary" (click)="addHost()" type="button" style="margin-bottom: 24px;">+ 新增主辦單位</button>
+
+    <!-- 提交按鈕 -->
+    <div style="margin-top: 12px;">
+      <button mat-raised-button color="primary" type="submit">提交</button>
+    </div>
+  </form>
+</div>
