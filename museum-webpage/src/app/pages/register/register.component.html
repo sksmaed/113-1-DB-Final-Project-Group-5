@@ -2,37 +2,42 @@
 <div class="container-fluid register-form">
     <form needs-validation [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="note">
-        <h1> 使用者資料註冊 </h1>
+        <h1> 職員資料註冊 </h1>
       </div>
   
       <div class="mb-4">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" autofocus formControlName="username" id="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['username'].errors,
-                       'is-valid': submitted && !f['username'].errors }" />
-        <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
-          <div *ngIf="f['username'].errors['required']">Username 為必填</div>
-          <div *ngIf="f['username'].errors['minlength']">
-            Username 必須至少為六個字元
-          </div>
-          <div *ngIf="f['username'].errors['maxlength']">
-            Username 必須至多為二十個字元
-          </div>
-        </div>
-        <div class="valid-feedback">
-          填寫正確
+        <label for="s_id" class="form-label">員工編號</label>
+        <input type="text" autofocus formControlName="s_id" id="s_id" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['s_id'].errors,
+                       'is-valid': submitted && !f['s_id'].errors }" />
+        <div *ngIf="submitted && f['s_id'].errors" class="invalid-feedback">
+          <div *ngIf="f['s_id'].errors['required']">s_id 為必填</div>
         </div>
       </div>
-  
+
       <div class="mb-4">
-        <label for="phone" class="form-label">Phone</label>
-        <input type="text" formControlName="phone" id="phone" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['phone'].errors,
-                       'is-valid': submitted && !f['phone'].errors }" />
-        <div *ngIf="submitted && f['phone'].errors" class="invalid-feedback">
-          <div *ngIf="f['phone'].errors['required']">手機號碼為必填</div>
-          <div *ngIf="f['phone'].errors['phone']">手機號碼格式不符</div>
+        <label for="s_id" class="form-label">員工姓名</label>
+        <input type="text" autofocus formControlName="s_name" id="s_name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['s_name'].errors,
+                       'is-valid': submitted && !f['s_name'].errors }" />
+        <div *ngIf="submitted && f['s_name'].errors" class="invalid-feedback">
+          <div *ngIf="f['s_name'].errors['required']">員工姓名為必填</div>
         </div>
-        <div class="valid-feedback">
-          填寫正確
+      </div>
+
+      <div class="mb-4">
+        <label for="s_id" class="form-label">職位</label>
+        <input type="text" autofocus formControlName="position" id="position" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['position'].errors,
+                       'is-valid': submitted && !f['position'].errors }" />
+        <div *ngIf="submitted && f['position'].errors" class="invalid-feedback">
+          <div *ngIf="f['position'].errors['required']">職位為必填</div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="s_id" class="form-label">合約起始日</label>
+        <input type="text" autofocus formControlName="contract_start_date" id="contract_start_date" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['contract_start_date'].errors,
+                       'is-valid': submitted && !f['contract_start_date'].errors }" />
+        <div *ngIf="submitted && f['contract_start_date'].errors" class="invalid-feedback">
+          <div *ngIf="f['contract_start_date'].errors['required']">合約起始日為必填</div>
         </div>
       </div>
   

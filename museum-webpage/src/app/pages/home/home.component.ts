@@ -1,26 +1,21 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
   content?: string;
 
-  constructor(private userService: UserService) { }
+  constructor(private router: Router) { }
 
-  ngOnInit(): void {
-    this.userService.getPublicContent().subscribe({
-      next: data => {
-        this.content = data;
-      },
-      error: err => {
-        this.content = JSON.parse(err.error).message;
-      }
-    });
+  ngOnInit(): void { }
+
+  navigateTo(route: string) {
+    this.router.navigate([`/${route}`]);
   }
 }

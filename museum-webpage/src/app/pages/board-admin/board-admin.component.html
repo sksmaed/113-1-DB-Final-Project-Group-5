@@ -1,6 +1,27 @@
-<ul>
-    <li><a [routerLink]="['/home']">Home</a></li>
-    <li><a [routerLink]="[ '/edit-exh']">Edit Exhibitions</a></li>
-    <li><a [routerLink]="[ '/edit-ticket']">Edit Tickets</a></li>
-    <li><a [routerLink]="[ '/analysis-tran']">Transaction Analysis</a></li>
-</ul>
+<div class="admin-home-container">
+    <header class="header">
+      <h1>管理者面板</h1>
+      <p>管理展覽、門票與交易分析</p>
+    </header>
+  
+    <div class="admin-features">
+      <!-- 編輯展覽 -->
+      <div class="feature-card" (click)="navigateTo('edit-exh')">
+
+        <h2>編輯展覽</h2>
+        <p>管理與更新展覽資訊。</p>
+      </div>
+  
+      <!-- 編輯門票 -->
+      <div class="feature-card" (click)="navigateTo('edit-ticket')">
+        <h2>編輯門票</h2>
+        <p>設定票券價格與有效期限。</p>
+      </div>
+  
+      <!-- 交易分析 -->
+      <div class="feature-card" (click)="navigateTo('analysis-tran')">
+        <h2>交易分析</h2>
+        <p>查看與分析交易數據。</p>
+      </div>
+    </div>
+  </div>  

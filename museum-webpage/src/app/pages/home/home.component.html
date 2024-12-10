@@ -1,14 +1,26 @@
-<ul>
-    <li><a [routerLink]="['/home']">Home</a></li>
-    <li><a [routerLink]="[ '/register']">Register</a></li>
-    <li><a [routerLink]="[ '/login']">Login</a></li>
-    <li><a [routerLink]="[ '/profile']">Profile</a></li>
-    <li><a [routerLink]="[ '/search-exh']">Search Exhibiton</a></li>
-    <li><a [routerLink]="[ '/search-ticket']">Search Ticket</a></li>
-</ul>
+<div class="user-home-container">
+  <header class="header">
+    <h1>歡迎來到展覽門票系統</h1>
+    <p>探索展覽、購買門票，查看您的購票紀錄</p>
+  </header>
 
-<div class="container">
-    <header class="jumbotron">
-      <p>{{ content }}</p>
-    </header>
+  <div class="features">
+    <!-- 搜尋展覽 -->
+    <div class="feature-card" (click)="navigateTo('search-exh')">
+      <h2>搜尋展覽</h2>
+      <p>探索最新的展覽與活動資訊。</p>
+    </div>
+
+    <!-- 搜尋＆購買門票 -->
+    <div class="feature-card" (click)="navigateTo('search-ticket')">
+      <h2>搜尋＆購買門票</h2>
+      <p>快速查找並購買您想要的展覽門票。</p>
+    </div>
+
+    <!-- 購票紀錄 -->
+    <div class="feature-card" (click)="navigateTo('customer-trans-history')">
+      <h2>購票紀錄</h2>
+      <p>查看您過去的購票記錄。</p>
+    </div>
   </div>
+</div>

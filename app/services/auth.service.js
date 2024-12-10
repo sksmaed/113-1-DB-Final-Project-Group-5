@@ -1,73 +1,83 @@
 // auth.service.js
 const db = require("../models");
+const sequelize = db.sequelize;
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
-const User = db.user;
-const Role = db.role;
+const Staff = db.staff;
+const StaffAccount = db.staffAccount;
 
 const Op = db.Sequelize.Op;
 
 const signup = (req, res) => {
-    // Save User to Database
-    User.create({
-        username: req.body.username,
-        phone: req.body.phone,
-        password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SEC).toString()
-    }).then(user => {
-        if (req.body.roles) {
-            let role_idx = req.body.roles == "user" ? 1 : 2;
-            user.setRoles(role_idx).then(() => {
-                res.send({ message: "User registered successfully!" });
+    const { s_id, s_name, position, contract_start_date, password } = req.body;
+
+    // 檢查必要欄位
+    if (!s_id || !password || !s_name || !position || !contract_start_date) {
+        return res.status(400).send({ message: "Missing required fields." });
+    }
+
+    // 加密密碼
+    const encryptedPassword = CryptoJS.AES.encrypt(password, process.env.PASS_SEC).toString();
+
+    // 使用事務處理
+    sequelize.transaction((t) => {
+        // 新增到 staff 表
+        return Staff.create(
+            { s_id, s_name, position, contract_start_date },
+            { transaction: t }
+        )
+            .then(() => {
+                // 新增到 staff_account 表
+                return StaffAccount.create(
+                    { s_id, password: encryptedPassword },
+                    { transaction: t }
+                );
             });
-        } else {
-            // user role = 1
-            user.setRoles(1).then(() => {
-                res.send({ message: "User registered successfully!" });
-            });
-        }
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    })
+        .then(() => {
+            res.status(201).send({ message: "Staff registered successfully!" });
+        })
+        .catch((err) => {
+            console.error("Error during staff registration:", err);
+            res.status(500).send({ message: "Failed to register staff.", error: err.message });
+        });
 };
 
 const signin = (req, res) => {
-    User.findOne({
+    StaffAccount.findOne({
         where: {
-            username: req.body.username
+            s_id: req.body.s_id
         }
-    }).then(user => {
-        if (!user) {
-            return res.status(404).send({ message: "Wrong Credentials." });
-        }
-
-        const hashedPassword = CryptoJS.AES.decrypt(user.password, process.env.PASS_SEC);
-        const orginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-
-        orginalPassword !== req.body.password && res.status(401).json("Wrong Credentials");
-
-        const accessToken = jwt.sign(
-            {id: user.id}, 
-            process.env.JWT_SEC,
-            { expiresIn: "3d" }
-        );
-
-        var authorities = [];
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                authorities.push("ROLE_" + roles[i].name.toUpperCase());
+    })
+        .then(staff => {
+            if (!staff) {
+                return res.status(404).send({ message: "Wrong Credentials." });
             }
+
+            // 解密並檢查密碼
+            const hashedPassword = CryptoJS.AES.decrypt(staff.password, process.env.PASS_SEC);
+            const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+
+            if (originalPassword !== req.body.password) {
+                return res.status(401).send({ message: "Wrong Credentials." });
+            }
+
+            // 生成 JWT Token
+            const accessToken = jwt.sign(
+                { s_id: staff.s_id }, // 用員工 ID 作為 Token Payload
+                process.env.JWT_SEC, // JWT Secret Key
+            );
+
+            // 返回成功響應
             res.status(200).send({
-                id: user.id,
-                username: user.username,
-                phone: user.phone,
-                roles: authorities,
+                s_id: staff.s_id,
                 accessToken: accessToken
             });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message });
         });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
 };
 
 module.exports = { signup, signin };

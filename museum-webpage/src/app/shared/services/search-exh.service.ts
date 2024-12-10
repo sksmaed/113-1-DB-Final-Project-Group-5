@@ -51,4 +51,8 @@ export class SearchExhService {
   getTransaction( params: any ):  Observable<any> {
     return this.http.get(API_URL + 'find-transaction', { params: params });
   }
+
+  getTransactionCustomer( params: any ):  Observable<any> {
+    return this.http.get(API_URL + 'find-transaction-customer', { params: params });
+  }
 }

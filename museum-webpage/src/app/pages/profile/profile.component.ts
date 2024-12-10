@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getStaffData(): void {
-    this.searchExhService.getStaffById(this.currentUser.id).subscribe((data) => {
+    this.searchExhService.getStaffById(this.currentUser.s_id).subscribe((data) => {
       this.staff = data;
     });
   }
@@ -46,7 +46,7 @@ export class ProfileComponent implements OnInit {
 
   // 儲存職員編輯資料
   saveStaff(): void {
-    this.editExhService.updateStaff(this.currentUser.id, this.staff).subscribe(
+    this.editExhService.updateStaff(this.currentUser.s_id, this.staff).subscribe(
       (response) => {
         this.isEditing = false;
         this.getStaffData();  // 更新顯示資料

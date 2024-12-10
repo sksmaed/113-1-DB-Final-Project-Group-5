@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const db = require("../models");
 const Exhibition = db.exhibition;
 const Building = db.building;
@@ -9,6 +9,7 @@ const Sponsor = db.sponsor;
 const Staff = db.staff;
 const Ticket = db.ticket;
 const Identity = db.identity;
+const Transaction = db.transaction;
 const ExhRoom = db.exhRoom;
 const ExhHost = db.exhHost;
 
@@ -641,5 +642,103 @@ const getTicketAdmin = (req, res) => {
   });
 };
 
+const getTransaction = (req, res) => {
+  const { startDate, endDate, c_phone, ticketName, identity, validTimeSpan } = req.query;
+
+  // 條件過濾
+  const queryConditions = {};
+  if (startDate && startDate !== 'null') {
+    queryConditions.date = { ...queryConditions.date, [Op.gte]: new Date(startDate).toISOString() };
+  }
+  if (endDate && endDate !== 'null') {
+    queryConditions.date = { ...queryConditions.date, [Op.lte]: new Date(endDate).toISOString() };
+  }
+  if (c_phone && c_phone !== 'null') {
+    queryConditions.c_phone = { [Op.like]: `%${c_phone}%` };
+  }
+
+  const ticketConditions = {};
+  if (ticketName && ticketName !== 'null') {
+    ticketConditions.t_name = { [Op.like]: `%${ticketName}%` };
+  }
+  if (identity && identity !== 'null') {
+    ticketConditions.iden_name = identity;
+  }
+  if (validTimeSpan && validTimeSpan !== 'null') {
+    ticketConditions.valid_time_span = validTimeSpan;
+  }
+
+  // 查詢數據
+  Transaction.findAll({
+    where: queryConditions,
+    attributes: ["tran_id", "c_phone", "date", "payment_method", "amount"],
+    include: [
+      {
+        model: Ticket,
+        attributes: ["t_name"],
+        where: ticketConditions,
+      },
+    ],
+    order: [["date", "ASC"]], // 按日期排序
+  })
+    .then((records) => {
+      const result = records.map((record) => ({
+        tran_id: record.tran_id,
+        c_phone: record.c_phone,
+        date: record.date,
+        payment_method: record.payment_method,
+        t_name: record.ticket.t_name,
+        amount: record.amount,
+      }));
+
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      console.error("交易記錄查詢錯誤:", error);
+      res.status(500).json({ message: "無法取得交易記錄", error: error.message });
+    });
+};
+
+const getTransactionCustomer = (req, res) => {
+  const { c_phone } = req.query;
+
+  if (!c_phone || c_phone.trim() === '') {
+    return res.status(400).json({ message: "手機號碼必填" });
+  }
+
+  Transaction.findAll({
+    where: { c_phone },
+    attributes: [
+      "date",
+      "amount",
+      "payment_method",
+      [literal("(SELECT price FROM ticket WHERE ticket.t_id = transaction.t_id)"), "price"],
+      [literal("(amount * (SELECT price FROM ticket WHERE ticket.t_id = transaction.t_id))"), "totalCost"]
+    ],
+    include: [
+      {
+        model: Ticket,
+        attributes: ["t_id", "t_name"],
+      }
+    ],
+    order: [["date", "DESC"]], // 按日期由近到遠排序
+  })
+    .then((transactions) => {
+      const results = transactions.map((transaction) => ({
+        t_id: transaction.ticket.t_id,
+        t_name: transaction.ticket.t_name,
+        date: transaction.date,
+        amount: transaction.amount,
+        totalCost: transaction.dataValues.totalCost,
+        payment_method: transaction.payment_method,
+      }));
+      res.status(200).json(results);
+    })
+    .catch((error) => {
+      console.error("交易紀錄查詢錯誤:", error);
+      res.status(500).json({ message: "無法取得交易紀錄", error: error.message });
+    });
+};
+
 module.exports = { findAll, searchExhUser, filterExhibitions, getVolunteersByExhId, getSponsorsByExhId, 
-  getStaffsByExhId, getStaffById, getTicket, getTicketAdmin };
+  getStaffsByExhId, getStaffById, getTicket, getTicketAdmin, getTransaction, getTransactionCustomer };

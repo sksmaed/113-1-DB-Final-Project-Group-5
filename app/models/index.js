@@ -24,22 +24,6 @@ const sequelize = new Sequelize(                    // 由資料庫連結設定�
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.user = require("../models/user.model.js").default(sequelize, Sequelize);
-db.role = require("../models/role.model.js").default(sequelize, Sequelize);
-// 設定兩資料表的對應關係（多對多，所以會多出一個新的表 user_roles）
-// 一個使用者可能有多個角色
-// 一個角色也可能有多個使用者
-db.role.belongsToMany(db.user, {
-  through: "user_roles",
-  foreignKey: "roleId",
-  otherKey: "userId"
-});
-db.user.belongsToMany(db.role, {
-  through: "user_roles",
-  foreignKey: "userId",
-  otherKey: "roleId"
-});
-db.ROLES = ["user", "admin"];
 
 db.identity = require("../models/identity.model.js")(sequelize, Sequelize);
 
@@ -94,5 +78,9 @@ db.exhibition.belongsToMany(db.staff, { through: db.exhStaffDuty, foreignKey: "e
 db.staff.belongsToMany(db.exhibition, { through: db.exhStaffDuty, foreignKey: "s_id" });
 db.exhStaffDuty.belongsTo(db.exhibition, { foreignKey: "exh_id" });
 db.exhStaffDuty.belongsTo(db.staff, { foreignKey: "s_id" });
+
+db.staffAccount = require("../models/staff_account.model.js").default(sequelize, Sequelize);
+db.staffAccount.belongsTo(db.staff, { foreignKey: "s_id" });
+db.staff.hasMany(db.staffAccount, { foreignKey: 's_id' });
 
 module.exports = db;
