@@ -30,6 +30,13 @@ def generate_sequential_letters(amount):
                 if len(letters) >= amount:
                     return letters
         return letters  # This handles cases if amount is beyond "ZZ"
+    
+# generate a number from normal distribution with specified mean and std
+def generate_discrete_normal(mean, std_dev, low=1, high=100):
+    number = np.random.normal(mean, std_dev)
+    rounded_number = round(number)
+    clipped_number = max(low, min(high, rounded_number))
+    return clipped_number
 
 # All Table Names
 tables = ["application", "applier", "building", "exhibition", 
@@ -60,13 +67,14 @@ operation_start_date = (today.replace(year=today.year - operation_year)
 
 # Predefined exhibition names
 num_exhibitions = 5
-exhibition_names = [
-    "Ancient Artifacts",
-    "Modern Marvels",
-    "Impressionist Paintings",
-    "Sculptures of the World",
-    "Renaissance Revival"
-]
+# exhibition_names = [
+#     "Ancient Artifacts",
+#     "Modern Marvels",
+#     "Impressionist Paintings",
+#     "Sculptures of the World",
+#     "Renaissance Revival"
+# ]
+exhibition_names = [fake.sentence(random.choice(range(2, 5))) for _ in range(num_exhibitions)]
 
 num_building = 3
 building_names = generate_sequential_letters(num_building)
@@ -187,10 +195,10 @@ room_data = {
     "rname": [fake.text(max_nb_chars=10) for _ in range(num_rooms)],
     "usage": r_usage,
     "floor": [random.randint(1, num_floors) for _ in range(num_rooms)],
-    "area": [round(random.uniform(500.0, 2000.0), 2) for _ in range(num_rooms)],
-    "height": [round(random.uniform(30.0, 50.0), 2) for _ in range(num_rooms)],
+    "area": [int(round(random.uniform(500.0, 2000.0), 0)) for _ in range(num_rooms)],
+    "height": [int(round(random.uniform(30.0, 50.0), 0)) for _ in range(num_rooms)],
     "b_id": [random.choice(building_data["b_id"]) for _ in range(num_rooms)],
-    "rent_cost": [round(random.uniform(10000, 30000), 2) for _ in range(num_rooms)]
+    "rent_cost": [int(round(random.uniform(10000, 30000), 0)) for _ in range(num_rooms)]
 }
 room_df = pd.DataFrame(room_data)
 
@@ -243,12 +251,6 @@ spon_exh_data = {
     "exh_id": [],
     "amount": []
 }
-
-def generate_discrete_normal(mean, std_dev, low=1, high=100):
-    number = np.random.normal(mean, std_dev)
-    rounded_number = round(number)
-    clipped_number = max(low, min(high, rounded_number))
-    return clipped_number
 
 mean_spon = 10
 std_dev_spon = 20  # Standard deviation
@@ -332,17 +334,6 @@ customer_data = {
 }
 customer_df = pd.DataFrame(customer_data)
 
-# In[20 transaction]:
-transaction_data = {
-    "tran_id": ["tr"+str(i) for i in range(1, num_transaction + 1)],
-    # "t_id": [], # we must need this
-    "c_phone": [fake.phone_number() for _ in range(num_transaction)],
-    "date": [fake.date_between(start_date='-'+str(operation_year)+'y', end_date='today') for _ in range(num_transaction)],
-    "payment_method": [random.choice(payment_methods) for _ in range(num_transaction)]
-}
-
-transaction_df = pd.DataFrame(transaction_data)
-
 # In[21 ticket]:
 ticket_data = {
     "t_id": [], # "t"+str(i) for i in range(1, num_ticket + 1)
@@ -375,6 +366,20 @@ for i in ticket_types:
             ticket_data["iden_name"].append(j)
 
 ticket_df = pd.DataFrame(ticket_data)
+
+# In[20 transaction]:
+transaction_data = {
+    "tran_id": ["tr"+str(i) for i in range(1, num_transaction + 1)],
+    # "t_id": [], # we must need this
+    # "amount": [generate_discrete_normal(1.5, 3) for _ in range(num_transaction)],
+    "c_phone": [fake.phone_number() for _ in range(num_transaction)],
+    "date": [fake.date_between(start_date='-'+str(operation_year)+'y', end_date='today') for _ in range(num_transaction)],
+    "payment_method": [random.choice(payment_methods) for _ in range(num_transaction)]
+}
+# for i in range(num_transaction):
+#     ava_tickets = ticket_df["t_id"][ticket_df["sale_start_date"] < transaction_data["date"][transaction_data["tran_id"] == "tr"+str(i)] & ticket_df["sale_end_date"] > transaction_data["date"][transaction_data["tran_id"] == "tr"+str(i)] & transaction_data["tran_id"] == "tr"+str(i)]
+#     transaction_data["t_id"].append(random.choice(ava_tickets))
+transaction_df = pd.DataFrame(transaction_data)
 
 # In[22 ticket_ava]:
 tic_ava_data = {
