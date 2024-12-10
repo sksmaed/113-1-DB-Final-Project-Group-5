@@ -351,7 +351,7 @@ const getSponsorsByExhId = (req, res) => {
         model: Sponsor, // 多對多關聯的贊助商
         attributes: ['spon_name'],
         through: {
-          attributes: ['date', 'amount'],
+          attributes: ['amount'],
         },
       },
     ],
@@ -385,7 +385,6 @@ const getSponsorsByExhId = (req, res) => {
         }
 
         sponsor.records.push({
-          date: record['sponsors.sponsor_exh.date'],
           amount: record['sponsors.sponsor_exh.amount'],
         });
 

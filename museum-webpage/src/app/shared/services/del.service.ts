@@ -22,9 +22,9 @@ export class DelService {
     });
   }
 
-  deleteSponsor(exh_id: any, sponName: string, date: any): Observable<any> {
+  deleteSponsor(exh_id: any, sponName: string): Observable<any> {
     return this.http.delete(API_URL + `del-spon/${exh_id}`, {
-      body: { sponName, date },
+      body: { sponName },
     });
   }
 

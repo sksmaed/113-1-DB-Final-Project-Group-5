@@ -90,19 +90,16 @@ const updateVolunteer = (req, res) => {
 
 const updateSponsor = (req, res) => {
   const { exh_id } = req.params;
-  const { sponName, date, record } = req.body;
-  const utcDate = new Date(date).toISOString();
+  const { sponName, record } = req.body;
 
   ExhSponsor.update(
   {
-    date: utcDate,
     amount: record.amount,
   },
   {
     where: {
       spon_name: sponName,
       exh_id,
-      date: utcDate,
     },
   }
 )

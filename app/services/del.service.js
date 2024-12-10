@@ -80,14 +80,12 @@ const delVolunteer = (req, res) => {
 
 const delSponsor = (req, res) => {
     const { exh_id } = req.params;
-    const { sponName, date } = req.body;
-    const utcDate = new Date(date).toISOString();
+    const { sponName } = req.body;
     
     ExhSponsor.destroy({
       where: {
         spon_name: sponName,
         exh_id,
-        date: utcDate,
       },
     })
       .then((deleted) => {

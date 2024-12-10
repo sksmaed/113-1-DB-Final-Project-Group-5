@@ -47,4 +47,8 @@ export class SearchExhService {
   getTicketAdmin( params: any ):  Observable<any> {
     return this.http.get(API_URL + 'find-ticket-admin', { params: params });
   }
+
+  getTransaction( params: any ):  Observable<any> {
+    return this.http.get(API_URL + 'find-transaction', { params: params });
+  }
 }

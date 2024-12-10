@@ -18,7 +18,7 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <ng-container *ngIf="editingIndex !== i">
-                      日期: {{ record.date }}
+                      金額: {{ record.amount | currency:'TWD' }}
                     </ng-container>
                     <ng-container *ngIf="editingIndex === i">
                       <input matInput [(ngModel)]="editableRecord.date" />
@@ -27,18 +27,8 @@
                 </mat-expansion-panel-header>
     
                 <div *ngIf="editingIndex !== i">
-                  <p style="font-size: 14px">金額: {{ record.amount | currency:'TWD' }}</p>
                   <button mat-button color="accent" (click)="enableEdit(element.name, i)">編輯</button>
                   <button mat-button color="warn" (click)="deleteRecord(element.name, i)">刪除</button>
-                </div>
-    
-                <div *ngIf="editingIndex === i">
-                  <mat-form-field>
-                    <mat-label>金額</mat-label>
-                    <input matInput [(ngModel)]="editableRecord.amount" />
-                  </mat-form-field>
-                  <button mat-button color="primary" (click)="saveEdit(element.name, i)">儲存</button>
-                  <button mat-button color="warn" (click)="cancelEdit()">取消</button>
                 </div>
               </mat-expansion-panel>
             </mat-accordion>

@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { Chart, ChartData, ChartType } from 'chart.js';
+import { ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { StatsService } from '../../shared/services/stats.service';
 
@@ -43,12 +43,41 @@ export class AnalysisTranComponent {
     ],
   };
   chartType: ChartType = 'bar';
+  chartOptions = {
+    responsive: false,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: '票券種類'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: '售出數量'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            size: 14,
+          },
+          color: '#333'
+        }
+      }
+    }
+  };
 
   searchForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private statsService: StatsService) {
     this.searchForm = this.fb.group({
-      date: [''],
+      startDate: [''],
+      endDate: [''],
       identity: [''],
       validTimeSpan: [''],
     });
@@ -60,9 +89,10 @@ export class AnalysisTranComponent {
 
   loadStats(): void {
     const today = new Date().toISOString().split('T')[0]; // 取得今日日期
-    const queryParams = { date: today };
+    const queryParams = { startDate: today, endDate: today };
     this.statsService.getTransStats(queryParams)
       .subscribe((response: any) => {
+        console.log(response);
         this.stats.todayTransactionCount = response.transactionCount || 0;
         this.stats.totalTicketsSold = response.totalTicketsSold || 0;
         this.stats.totalRevenue = response.totalRevenue || 0;
@@ -89,24 +119,27 @@ export class AnalysisTranComponent {
   }
 
   onSearch(): void {
-    const filters = this.searchForm.value;
-    const queryParams = new URLSearchParams(filters).toString();
-
-    /*this.http.get(`/api/tickets/stats?${queryParams}`).subscribe((response: any) => {
-      this.stats.todayTransactionCount = response.transactionCount || 0;
-      this.stats.totalTicketsSold = response.totalTicketsSold || 0;
-      this.stats.totalRevenue = response.totalRevenue || 0;
-
-      // 更新圖表資料
-      this.chartData.labels = response.ticketTypes.map((t: any) => t.t_name);
-      this.chartData.datasets[0].data = response.ticketTypes.map(
-        (t: any) => t.quantity
-      );
-    });*/
+    const queryParams = this.searchForm.value;
+    console.log(queryParams);
+    this.statsService.getTransStats(queryParams)
+      .subscribe((response: any) => {
+        console.log(response);
+        this.stats.todayTransactionCount = response.transactionCount || 0;
+        this.stats.totalTicketsSold = response.totalTicketsSold || 0;
+        this.stats.totalRevenue = response.totalRevenue || 0;
+        
+        // 更新圖表資料
+        this.chartData.labels = response.ticketTypes.map((t: any) => t.t_name);
+        this.chartData.datasets[0].data = response.ticketTypes.map(
+          (t: any) => parseInt(t.amount, 10)
+        );
+      });
+    
+    this.updateChart();
   }
 
   navigateToTransactionRecords(): void {
     // 跳轉到交易紀錄頁面
-    this.router.navigate(['/tran-history']);
+    this.router.navigate(['/view-tran']);
   }
 }

@@ -9,14 +9,6 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>日期</mat-label>
-      <input matInput [matDatepicker]="datePicker" formControlName="date" placeholder="選擇日期" />
-      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-      <mat-datepicker #datePicker></mat-datepicker>
-      <mat-error *ngIf="sponsorForm.get('date')?.hasError('required')">日期為必填欄位</mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
       <mat-label>贊助金額</mat-label>
       <input matInput formControlName="amount" placeholder="輸入金額" />
       <mat-error *ngIf="sponsorForm.get('amount')?.hasError('required')">金額為必填欄位</mat-error>

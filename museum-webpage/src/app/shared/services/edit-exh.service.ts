@@ -21,8 +21,8 @@ export class EditExhService {
     return this.http.put(API_URL + `update-vol/${exh_id}`, {volunteerId, startTime, record})
   }
 
-  updateSponsor(exh_id: any, sponName: string, date: any, record: any): Observable<any> {
-    return this.http.put(API_URL + `update-spon/${exh_id}`, {sponName, date, record})
+  updateSponsor(exh_id: any, sponName: string, record: any): Observable<any> {
+    return this.http.put(API_URL + `update-spon/${exh_id}`, {sponName, record})
   }
 
   updateStaffDuty(exh_id: any, s_id: string, record: any): Observable<any> {

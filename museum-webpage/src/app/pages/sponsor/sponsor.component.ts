@@ -16,7 +16,6 @@ import { AddSponsorDialogComponent } from '../spon-add-dialog/spon-add-dialog.co
 interface Sponsor {
   name: string;
   records: {
-    date: string;
     amount: number;
   }[];
 }
@@ -86,21 +85,18 @@ export class SponsorComponent implements OnInit {
 
   editingIndex: number | null = null;
   editableRecord: any = null;
-  originalStartTime: string | null = null;
 
   enableEdit(sponsorName: string, recordIndex: number): void {
     this.editingIndex = recordIndex;
     const sponsor = this.sponsors.find((s) => s.name === sponsorName);
     if (sponsor) {
       this.editableRecord = { ...sponsor.records[recordIndex] };
-      this.originalStartTime = sponsor.records[recordIndex].date; // 保存原本的開始時間
     }
   }
   
   cancelEdit(): void {
     this.editingIndex = null;
     this.editableRecord = null;
-    this.originalStartTime = null;
   }
   
   saveEdit(sponsorName: string, recordIndex: number): void {
@@ -112,7 +108,6 @@ export class SponsorComponent implements OnInit {
       this.editExhService.updateSponsor(
         this.exhibitionId,
         sponsorName,
-        this.originalStartTime, // 傳遞原本的開始時間作為條件
         updatedRecord
       ).subscribe(
         (response) => {
@@ -120,7 +115,6 @@ export class SponsorComponent implements OnInit {
           sponsor.records[recordIndex] = updatedRecord; // 更新本地資料
           this.editingIndex = null;
           this.editableRecord = null;
-          this.originalStartTime = null;
         },
         (error) => {
           console.error('更新失敗:', error);
@@ -133,13 +127,11 @@ export class SponsorComponent implements OnInit {
     const sponsor = this.sponsors.find((s) => s.name === sponName);
     if (sponsor) {
       const sponsorName = sponsor.name;
-      const date = sponsor.records[recordIndex].date;
   
       // 呼叫 API 刪除資料
       this.delService.deleteSponsor(
         this.exhibitionId,
         sponsorName,
-        date
       ).subscribe(
         (response) => {
           console.log('刪除成功:', response);

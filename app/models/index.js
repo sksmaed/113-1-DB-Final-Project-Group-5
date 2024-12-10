@@ -8,6 +8,10 @@ const sequelize = new Sequelize(                    // 由資料庫連結設定�
     host: config.HOST,
     dialect: config.dialect,
     operatorsAliases: false,
+    timezone: '+08:00', // 設定為台北時區
+    dialectOptions: {
+      timezone: 'local' // 確保使用本地時間
+    },
     pool: {
       max: config.pool.max,
       min: config.pool.min,

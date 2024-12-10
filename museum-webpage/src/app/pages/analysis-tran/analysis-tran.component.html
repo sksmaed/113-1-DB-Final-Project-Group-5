@@ -7,7 +7,7 @@
   
     <div class="summary">
       <div>
-        <h3>今日交易總數</h3>
+        <h3>交易總筆數</h3>
         <p>{{ stats.todayTransactionCount }}</p>
       </div>
       <div>
@@ -15,7 +15,7 @@
         <p>{{ stats.totalTicketsSold }}</p>
       </div>
       <div>
-        <h3>總金額</h3>
+        <h3>總銷售額</h3>
         <p>{{ stats.totalRevenue | currency }}</p>
       </div>
     </div>
@@ -26,17 +26,25 @@
       <canvas baseChart
               [data]="chartData"
               [labels]="chartLabels"
-              [type]="'bar'"></canvas>
+              [type]="'bar'"
+              [options]="chartOptions"></canvas>
     </div>
   
     <!-- 查詢表單 -->
     <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
-      <mat-form-field appearance="fill">
-        <mat-label>日期</mat-label>
-        <input matInput [matDatepicker]="date" formControlName="date">
-        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
-        <mat-datepicker #date></mat-datepicker>
-      </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>開始日期</mat-label>
+          <input matInput [matDatepicker]="startDate" formControlName="startDate">
+          <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+          <mat-datepicker #startDate></mat-datepicker>
+        </mat-form-field>
+    
+        <mat-form-field appearance="fill">
+          <mat-label>結束日期</mat-label>
+          <input matInput [matDatepicker]="endDate" formControlName="endDate">
+          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+          <mat-datepicker #endDate></mat-datepicker>
+        </mat-form-field>
   
       <mat-form-field appearance="fill">
         <mat-label>身份別</mat-label>

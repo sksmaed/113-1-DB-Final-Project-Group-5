@@ -147,10 +147,10 @@ const addVolunteerRecord = (req, res) => {
 };
 
 const addSponsorRecord = (req, res) => {
-  const { exh_id, spon_name, date, amount } = req.body;  
+  const { exh_id, spon_name, amount } = req.body;  
 
-  if (!exh_id || !spon_name || !date || !amount) {
-    return res.status(400).send({ message: "請提供所有必要的參數 (exh_id, spon_name, date, amount)" });
+  if (!exh_id || !spon_name || !amount) {
+    return res.status(400).send({ message: "請提供所有必要的參數 (exh_id, spon_name, amount)" });
   } 
 
   Sponsor.findOne({
@@ -166,7 +166,6 @@ const addSponsorRecord = (req, res) => {
     return ExhSponsor.create({
       exh_id,
       spon_name,
-      date,
       amount,
     });
   }).then((exhSponsor) => {
