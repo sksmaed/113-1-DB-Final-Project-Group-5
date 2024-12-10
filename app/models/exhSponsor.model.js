@@ -8,10 +8,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         primaryKey: true
       },
-      date: {
-        type: Sequelize.DATE,
-        primaryKey: true
-      },
       amount: {
         type: Sequelize.STRING,
       },

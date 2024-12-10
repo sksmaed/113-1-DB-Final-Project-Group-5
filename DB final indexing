@@ -1,0 +1,15 @@
+EXPLAIN ANALYZE
+SELECT SUM("amount") AS "amount", SUM(amount * (SELECT price FROM ticket WHERE ticket.t_id = transaction.t_id)) AS "totalRevenue", "ticket"."t_id" AS "ticket.t_id", "ticket"."t_name" AS "ticket.t_name" FROM "transaction" AS "transaction" INNER JOIN "ticket" AS "ticket" ON "transaction"."t_id" = "ticket"."t_id" WHERE ("transaction"."date" >= '2024-01-01 00:00:00.000 +08:00' AND "transaction"."date" <= '2024-12-31 00:00:00.000 +08:00') GROUP BY "ticket"."t_id" ORDER BY SUM("amount") DESC;
+
+CREATE INDEX idx_transaction_date_t_id ON transaction (date, t_id);
+Drop Index idx_transaction_date_t_id
+
+CREATE INDEX idx_ticket_t_id ON ticket (t_id);
+
+EXPLAIN ANALYZE
+SELECT "ticket"."t_id", "ticket"."t_name", "ticket"."price", "ticket"."sale_start_date", "ticket"."sale_end_date", "ticket"."valid_time_span", "ticket"."iden_name", "rooms"."r_id" AS "rooms.r_id", "rooms"."rName" AS "rooms.rName", "rooms->ticket_avail"."t_id" AS "rooms.ticket_avail.t_id", "rooms->ticket_avail"."r_id" AS "rooms.ticket_avail.r_id", "rooms->exhibitions"."exh_id" AS "rooms.exhibitions.exh_id", "rooms->exhibitions"."exhName" AS "rooms.exhibitions.exhName", "rooms->exhibitions"."start_date" AS "rooms.exhibitions.start_date", "rooms->exhibitions"."end_date" AS "rooms.exhibitions.end_date", "rooms->building"."b_id" AS "rooms.building.b_id", "rooms->building"."b_name" AS "rooms.building.b_name", "identity"."iden_name" AS "identity.iden_name" FROM "ticket" AS "ticket" LEFT OUTER JOIN ( "ticket_avail" AS "rooms->ticket_avail" INNER JOIN "room" AS "rooms" ON "rooms"."r_id" = "rooms->ticket_avail"."r_id") ON "ticket"."t_id" = "rooms->ticket_avail"."t_id" LEFT OUTER JOIN ( "exhibition_room" AS "rooms->exhibitions->exhibition_room" INNER JOIN "exhibition" AS "rooms->exhibitions" ON "rooms->exhibitions"."exh_id" = "rooms->exhibitions->exhibition_room"."exh_id") ON "rooms"."r_id" = "rooms->exhibitions->exhibition_room"."r_id" LEFT OUTER JOIN "building" AS "rooms->building" ON "rooms"."b_id" = "rooms->building"."b_id" LEFT OUTER JOIN "identity" AS "identity" ON "ticket"."iden_name" = "identity"."iden_name" ORDER BY "ticket"."sale_start_date" DESC;
+
+CREATE INDEX idx_exhibition_room_exh_id ON exhibition_room(exh_id);
+CREATE INDEX idx_exhibition_exh_id ON exhibition(exh_id);
+
+CREATE INDEX idx_ticket_iden_name_sale_start_date ON ticket(iden_name, sale_start_date);

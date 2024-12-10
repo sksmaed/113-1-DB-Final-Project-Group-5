@@ -20,9 +20,6 @@
                     <ng-container *ngIf="editingIndex !== i">
                       金額: {{ record.amount | currency:'TWD' }}
                     </ng-container>
-                    <ng-container *ngIf="editingIndex === i">
-                      <input matInput [(ngModel)]="editableRecord.date" />
-                    </ng-container>
                   </mat-panel-title>
                 </mat-expansion-panel-header>
     

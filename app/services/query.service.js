@@ -500,6 +500,10 @@ const getTicket = (req, res) => {
     whereConditions.iden_name = identity;
   }
 
+  // 添加有效票券的篩選條件
+  whereConditions.sale_start_date = { [Op.lte]: currentDate }; // 銷售開始日期 <= 當前日期
+  whereConditions.sale_end_date = { [Op.gte]: currentDate };   // 銷售結束日期 >= 當前日期
+
   // 查詢門票
   Ticket.findAll({
     where: whereConditions,
@@ -517,7 +521,10 @@ const getTicket = (req, res) => {
               exhName: { [Op.like]: `%${exhName}%` },
               start_date: { [Op.lte]: currentDate }, // 展覽開始日期 <= 當前日期
               end_date: { [Op.gte]: currentDate }, // 展覽結束日期 >= 當前日期
-            } : undefined
+            } : {
+              start_date: { [Op.lte]: currentDate }, // 展覽開始日期 <= 當前日期
+              end_date: { [Op.gte]: currentDate }, // 展覽結束日期 >= 當前日期
+            }
           },
           {
             model: Building,
@@ -535,8 +542,12 @@ const getTicket = (req, res) => {
     ]
   })
   .then((tickets) => {
+    const filteredTickets = tickets.filter(ticket => 
+      ticket.rooms.some(room => room.exhibitions && room.exhibitions.length > 0)
+    );
+
     // 將結果格式化
-    const result = tickets.map(ticket => ({
+    const result = filteredTickets.map(ticket => ({
       t_id: ticket.t_id,
       t_name: ticket.t_name,       // 門票名稱
       price: ticket.price,         // 價格
@@ -585,6 +596,7 @@ const getTicketAdmin = (req, res) => {
   // 查詢門票
   Ticket.findAll({
     where: whereConditions,
+    order: [['sale_start_date', 'DESC']],
     include: [
       // 查詢可參觀的展覽
       {
