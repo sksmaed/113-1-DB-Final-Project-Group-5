@@ -1,0 +1,107 @@
+<div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>展覽門票管理頁面</h1>
+        <button mat-raised-button color="primary" (click)="navigateToAddTicket()">新增展覽票種</button>
+      </div>
+  
+    <!-- 搜尋條件表單 -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" style="margin-bottom: 16px;">
+      <!-- 門票類別 -->
+      <mat-form-field appearance="fill" style="margin-bottom: 16px;">
+        <mat-label>門票類別</mat-label>
+        <mat-select formControlName="valid_time_span">
+          <mat-option [value]="''">不限</mat-option>
+          <mat-option [value]="1">單日票</mat-option>
+          <mat-option [value]="7">週票</mat-option>
+          <mat-option [value]="30">月票</mat-option>
+          <mat-option [value]="365">年票</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- 展覽名稱 -->
+      <mat-form-field appearance="fill" style="margin-bottom: 16px;">
+        <mat-label>展覽名稱</mat-label>
+        <input matInput formControlName="exhName" placeholder="輸入展覽名稱">
+      </mat-form-field>
+  
+      <!-- 展館名稱 -->
+      <mat-form-field style="margin-bottom: 16px;">
+        <mat-label>展館名稱</mat-label>
+        <input matInput formControlName="building" placeholder="輸入展館名稱">
+      </mat-form-field>
+  
+      <!-- 身份類型 -->
+      <mat-form-field appearance="fill" style="margin-bottom: 16px;">
+        <mat-label>身份類型</mat-label>
+        <mat-select formControlName="identity">
+          <mat-option [value]="''">不限</mat-option>
+          <mat-option [value]="'A'">成人</mat-option>
+          <mat-option [value]="'S'">學生</mat-option>
+          <mat-option [value]="'C'">幼童</mat-option>
+          <mat-option [value]="'O'">年長者</mat-option>
+          <mat-option [value]="'D'">行動不便者</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit">搜尋</button>
+    </form>
+  
+    <!-- 結果表格 -->
+    <table mat-table [dataSource]="tickets" class="mat-elevation-z8" *ngIf="tickets.length > 0">
+      <ng-container matColumnDef="t_name">
+        <th mat-header-cell *matHeaderCellDef> 名稱 </th>
+        <td mat-cell *matCellDef="let ticket"> {{ticket.t_name}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef> 價格 </th>
+        <td mat-cell *matCellDef="let ticket"> {{ticket.price}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sale_start_date">
+        <th mat-header-cell *matHeaderCellDef> 開始販售日期 </th>
+        <td mat-cell *matCellDef="let ticket"> {{ ticket.sale_start_date | date:'yyyy-MM-dd' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sale_end_date">
+        <th mat-header-cell *matHeaderCellDef> 結束販售日期 </th>
+        <td mat-cell *matCellDef="let ticket"> {{ ticket.sale_end_date | date:'yyyy-MM-dd' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="valid_time_span">
+        <th mat-header-cell *matHeaderCellDef> 有效期限 </th>
+        <td mat-cell *matCellDef="let ticket"> {{ticket.valid_time_span}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="identity">
+        <th mat-header-cell *matHeaderCellDef> 消費者身份 </th>
+        <td mat-cell *matCellDef="let ticket"> {{ getIdentityLabel(ticket.identity) }} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="exhibitions">
+        <th mat-header-cell *matHeaderCellDef> 可進入展廳編號 </th>
+        <td mat-cell *matCellDef="let ticket">
+          <button mat-button (click)="toggleRooms(ticket)">
+            查看
+          </button>
+          <div *ngIf="getExhibitionsVisibility(ticket.t_id)">
+            <ul>
+              <li *ngFor="let room of ticket.rooms">
+                {{ room.r_id }}<br>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </ng-container>          
+  
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> 操作 </th>
+        <td mat-cell *matCellDef="let ticket">
+          <button mat-raised-button color="accent" (click)="editTicket(ticket)">編輯</button>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>  

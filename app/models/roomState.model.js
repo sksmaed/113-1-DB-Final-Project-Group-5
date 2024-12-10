@@ -1,25 +1,24 @@
 module.exports = (sequelize, Sequelize) => {
-    const exhSponsor = sequelize.define("sponsor_exh", {
-      exh_id: {
+    const roomState = sequelize.define("room_state", {
+      r_id: {
         type: Sequelize.STRING,
         primaryKey: true
       },
-      spon_name: {
-        type: Sequelize.STRING,
+      state_name: {
+        type: Sequelize.CHAR,
         primaryKey: true
       },
-      date: {
+      start_date: {
         type: Sequelize.DATE,
         primaryKey: true
       },
-      amount: {
-        type: Sequelize.STRING,
+      end_date: {
+        type: Sequelize.DATE
       },
     },
     {
-      tableName: "sponsor_exh",
+      tableName: "room_state",
       timestamps: false,
     });
-    return exhSponsor;
-  };
-  
+    return roomState;
+};

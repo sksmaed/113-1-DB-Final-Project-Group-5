@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>編輯展覽門票資訊</h2>
+<mat-dialog-content>
+  <form [formGroup]="editForm">
+    <!-- 名稱 -->
+    <mat-form-field appearance="fill">
+      <mat-label>名稱</mat-label>
+      <input matInput formControlName="t_name" />
+    </mat-form-field>
+
+    <!-- 價格 -->
+    <mat-form-field appearance="fill">
+      <mat-label>價格</mat-label>
+      <input matInput type="number" formControlName="price" />
+    </mat-form-field>
+
+    <!-- 開始販售日期 -->
+    <mat-form-field appearance="fill">
+      <mat-label>開始販售日期</mat-label>
+      <input matInput [matDatepicker]="startPicker" formControlName="sale_start_date" />
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- 結束販售日期 -->
+    <mat-form-field appearance="fill">
+      <mat-label>結束販售日期</mat-label>
+      <input matInput [matDatepicker]="endPicker" formControlName="sale_end_date" />
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- 有效期限 -->
+    <mat-form-field appearance="fill">
+      <mat-label>有效期限</mat-label>
+      <mat-select formControlName="valid_time_span">
+        <mat-option [value]="1">單日票</mat-option>
+        <mat-option [value]="7">週票</mat-option>
+        <mat-option [value]="30">月票</mat-option>
+        <mat-option [value]="365">年票</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- 消費者身份 -->
+    <mat-form-field appearance="fill">
+      <mat-label>消費者身份</mat-label>
+      <mat-select formControlName="identity">
+        <mat-option [value]="'A'">成人</mat-option>
+        <mat-option [value]="'S'">學生</mat-option>
+        <mat-option [value]="'C'">幼童</mat-option>
+        <mat-option [value]="'O'">年長者</mat-option>
+        <mat-option [value]="'D'">行動不便者</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- 展廳 -->
+    <mat-label>展廳</mat-label>
+    <div *ngFor="let room of ticketRooms; let i = index">
+      <mat-form-field appearance="fill">
+        <mat-label>展廳 ID</mat-label>
+        <input matInput [(ngModel)]="ticketRooms[i].r_id" [ngModelOptions]="{standalone: true}"/>
+      </mat-form-field>
+      <button mat-icon-button color="warn" (click)="removeRoom(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <button mat-button (click)="addRoom()">新增展廳</button>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">取消</button>
+  <button mat-raised-button color="primary" [disabled]="editForm.invalid" (click)="onSave()">儲存</button>
+</mat-dialog-actions>

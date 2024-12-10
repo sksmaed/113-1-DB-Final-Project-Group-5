@@ -1,0 +1,34 @@
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+/* 表格標頭置中 */
+.center-text {
+  text-align: center;
+}
+
+/* 調整按鈕大小並靠右 */
+.actions-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px; /* 按鈕之間的間距 */
+}
+
+button {
+  font-size: 12px;
+  min-width: unset; /* 移除 Material 的最小寬度限制 */
+}
+
+.center-text {
+  text-align: center;
+}
+
+.mat-cell div {
+  margin-bottom: 4px; /* 調整每行之間的間距 */
+}
+
+.mat-cell div:last-child {
+  margin-bottom: 0; /* 去除最後一行的間距 */
+}

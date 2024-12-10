@@ -1,0 +1,69 @@
+<div>
+    <h1>新增票券</h1>
+  
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+      <!-- 展覽名稱 -->
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>票券名稱</mat-label>
+        <input matInput formControlName="t_name" placeholder="輸入票券名稱" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>價格</mat-label>
+        <input matInput formControlName="price" placeholder="輸入價格" />
+      </mat-form-field>
+  
+      <!-- 開始時間 -->
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>開始販售日期</mat-label>
+        <input matInput formControlName="sale_start_date" [matDatepicker]="startPicker" placeholder="選擇開始販售日期" />
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+  
+      <!-- 結束時間 -->
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>結束販售日期</mat-label>
+        <input matInput formControlName="sale_end_date" [matDatepicker]="endPicker" placeholder="選擇結束販售日期" />
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>有效時間</mat-label>
+        <input matInput formControlName="valid_time_span" placeholder="輸入有效時間" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 16px;">
+        <mat-label>選擇可購買之消費者身份</mat-label>
+        <mat-select formControlName="iden_name">
+          <mat-option [value]="'A'">成人</mat-option>
+          <mat-option [value]="'S'">學生</mat-option>
+          <mat-option [value]="'C'">幼童</mat-option>
+          <mat-option [value]="'O'">年長者</mat-option>
+          <mat-option [value]="'D'">行動不便者</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <!-- 展廳 -->
+      <h3>展廳</h3>
+      <div formArrayName="rooms">
+        <div *ngFor="let room of roomControls.controls; let i = index" style="display: flex; align-items: center; margin-bottom: 8px;">
+          <mat-form-field appearance="fill" style="flex: 1; margin-right: 16px;">
+            <mat-label>展廳編號</mat-label>
+            <input matInput [formControlName]="i" placeholder="輸入展廳編號" />
+          </mat-form-field>
+          <button mat-icon-button color="warn" (click)="removeRoom(i)" type="button">
+            <mat-icon>remove</mat-icon>
+          </button>
+        </div>
+      </div>
+      <button mat-stroked-button color="primary" (click)="addRoom()" type="button" style="margin-bottom: 24px;">+ 新增展廳</button>
+  
+      <!-- 提交按鈕 -->
+      <div style="margin-top: 12px;">
+        <button mat-raised-button color="primary" type="submit">提交</button>
+      </div>
+    </form>
+  </div>
+  
