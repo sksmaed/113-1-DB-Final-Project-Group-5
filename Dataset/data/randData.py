@@ -54,7 +54,7 @@ num_host = 4
 num_applier = 1000
 num_spon = 20
 num_volunteers = 100
-num_rooms = 15
+num_rooms = 35
 num_customer = 10000
 num_transaction = 20000
 num_ticket = 20
@@ -66,7 +66,7 @@ operation_start_date = (today.replace(year=today.year - operation_year)
                         if today.month != 2 or today.day != 29 else today - timedelta(days=365))
 
 # Predefined exhibition names
-num_exhibitions = 300
+num_exhibitions = 400
 exhibition_names = [fake.sentence(random.choice(range(2, 5)))[:-1] for _ in range(num_exhibitions)]
 
 num_building = 3
@@ -140,7 +140,7 @@ usage_types = ["O", "S"]
 
 # In[6 host]:
 host_data = {
-    "host_name": [fake.name() for _ in range(num_host)]
+    "host_name": [fake.company() for _ in range(num_host)]
 }
 host_df = pd.DataFrame(host_data)
 
@@ -194,12 +194,16 @@ building_data = {
 building_df = pd.DataFrame(building_data)
 
 # In[10 room]:
-# Ensure each usage type is chosen at least once
-r_usage = usage_types.copy()
-if num_rooms > len(usage_types):
-    additional_events = random.choices(usage_types, k=num_rooms - len(usage_types))
-    r_usage.extend(additional_events)
-random.shuffle(r_usage)
+# # Ensure each usage type is chosen at least once
+# r_usage = usage_types.copy()
+# if num_rooms > len(usage_types):
+#     additional_events = random.choices(usage_types, k=num_rooms - len(usage_types))
+#     r_usage.extend(additional_events)
+# random.shuffle(r_usage)
+split_index = int(num_rooms * (1/3))
+r_usage_A = [usage_types[0]] * split_index
+r_usage_B = [usage_types[1]] * (num_rooms - split_index)
+r_usage = r_usage_A + r_usage_B
 
 room_data = {
     "r_id": ["r"+str(i) for i in range(1, num_rooms + 1)],
@@ -214,11 +218,44 @@ room_data = {
 room_df = pd.DataFrame(room_data)
 
 # In[5 exh_room]:
+# Initialize the `exh_room_data`
 exh_room_data = {
-    "exh_id": ["ex"+str(i) for i in range(1, num_exhibitions + 1)],
-    "room_id": [random.choice(room_df[room_df["usage"] == "S"]["r_id"].tolist()) for _ in range(num_exhibitions)]
+    "exh_id": exhibitions_data["exh_id"].copy(),
+    "room_id": [""] * len(exhibitions_data["exh_id"])  # Placeholder for room assignments
 }
+
+# Convert to DataFrame
 exh_room_df = pd.DataFrame(exh_room_data)
+
+# Iterate over exhibitions
+for index, row in exhibitions_df.iterrows():
+    current_exh_id = row["exh_id"]
+    current_start = row["start_date"]
+    current_end = row["end_date"]
+    
+    # Find overlapping exhibitions in `exh_room_df`
+    overlapping_exhibitions = exh_room_df.merge(
+        exhibitions_df,
+        on="exh_id"
+    ).loc[
+        (exhibitions_df["start_date"] <= current_end) &
+        (exhibitions_df["end_date"] >= current_start)
+    ]
+    
+    # Extract `room_id` of overlapping exhibitions
+    unavailable_rooms = overlapping_exhibitions["room_id"].dropna().unique()
+    
+    # Find available rooms
+    available_rooms = [room for room in room_df[room_df["usage"] == "S"]["r_id"].tolist() if room not in unavailable_rooms]
+    
+    # Assign a random available room if possible
+    if available_rooms:
+        selected_room = random.choice(available_rooms)
+    else:
+        selected_room = None  # No available rooms; handle appropriately
+    
+    # Update the `room_id` in `exh_room_df`
+    exh_room_df.at[index, "room_id"] = selected_room
 
 # In[7 host_exhibition]:
 host_exh_data = {
