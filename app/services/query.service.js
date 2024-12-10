@@ -80,8 +80,9 @@ const searchExhUser = (req, res) => {
 
   // 展覽類別條件
   if (usage && usage !== 'null') {
-    whereRoom.usage = type; // 'O' 或 'S'
+    whereRoom.usage = usage; // 'O' 或 'S'
   }
+  console.log(whereRoom);
 
   // 展覽日期條件
   if (date && date !== 'null') {
@@ -102,39 +103,22 @@ const searchExhUser = (req, res) => {
     };
   }
 
-  //加入展館條件
-  if (building && building !== "null") {
-    includeConditions.push({
-      model: Room,
-      include: [
-        {
-          model: Building,
-          attributes: ["b_name"], // 僅選取展館名稱
-          where: {
-            b_name: {
-              [Op.like]: `%${building}%`,
-            },
-          },
-        },
-      ],
-    });
-  } else {
-    includeConditions.push({
-      model: Room,
-      include: [
-        {
-          model: Building,
-          attributes: ["b_name"], // 僅選取展館名稱
-        },
-      ],
-    });
-  }
-
-  // 加入展廳資訊
+  // 加入展館條件和展廳條件
   includeConditions.push({
     model: Room,
-    through: ExhRoom,
-    attributes: ["rName"]
+    where: whereRoom, // 加入展廳篩選條件
+    include: [
+      {
+        model: Building,
+        attributes: ["b_name"], // 僅選取展館名稱
+        where: building && building !== "null" ? {
+          b_name: {
+            [Op.like]: `%${building}%`,
+          },
+        } : undefined,
+      },
+    ],
+    attributes: ["rName"] // 僅選取展廳名稱
   });
 
   // 加入主辦方資訊
@@ -157,6 +141,7 @@ const searchExhUser = (req, res) => {
       res.status(500).json({ message: "無法取得展覽資料", error: error.message });
     });
 };
+
 
 const filterExhibitions = (req, res) => {
   const { year, month, exhName , building, host } = req.query;
