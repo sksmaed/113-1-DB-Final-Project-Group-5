@@ -10,7 +10,7 @@ from faker import Faker
 import random
 import string
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 # In[initialization & declaration]:
 # Initialize Faker
@@ -125,9 +125,9 @@ vol_works = [
 ]
 
 payment_methods = [
-    "信用卡",
-    "LinePay",
-    "銀行轉帳"
+    "credit_card",
+    "linepay",
+    "bank_transfer"
 ]
 
 exhibition_time_span = [
@@ -227,35 +227,113 @@ exh_room_data = {
 # Convert to DataFrame
 exh_room_df = pd.DataFrame(exh_room_data)
 
-# Iterate over exhibitions
+# # Iterate over exhibitions
+# for index, row in exhibitions_df.iterrows():
+#     current_exh_id = row["exh_id"]
+#     current_start = row["start_date"]
+#     current_end = row["end_date"]
+    
+#     # Find overlapping exhibitions in `exh_room_df`
+#     overlapping_exhibitions = exh_room_df.merge(
+#         exhibitions_df,
+#         on="exh_id"
+#     ).loc[
+#         (exhibitions_df["start_date"] <= current_end) &
+#         (exhibitions_df["end_date"] >= current_start)
+#     ]
+    
+#     # Extract `room_id` of overlapping exhibitions
+#     unavailable_rooms = overlapping_exhibitions["room_id"].dropna().unique()
+    
+#     # Find available rooms
+#     available_rooms = [room for room in room_df[room_df["usage"] == "S"]["r_id"].tolist() if room not in unavailable_rooms]
+    
+#     # Assign a random available room if possible
+#     if available_rooms:
+#         selected_room = random.choice(available_rooms)
+#     else:
+#         selected_room = None  # No available rooms; handle appropriately
+    
+#     # Update the `room_id` in `exh_room_df`
+#     exh_room_df.at[index, "room_id"] = selected_room
+
+# In[11 room_state]:
+room_state_data = {
+    "r_id": [],
+    "state_name": [],
+    "start_date": [], 
+    "end_date": []
+}
+# 1. Initialize the room state DataFrame
+start_day = date.today() - timedelta(days=365 * operation_year)
+start_period = date(start_day.year, start_day.month, start_day.day)
+end_day = date.today() + timedelta(days=365)
+end_period = date(end_day.year, start_day.month, start_day.day)  # 1 year in the future
+
+# Create a list of dates between start_period and end_period
+date_range = pd.date_range(start=start_period, end=end_period, freq='D')
+# Initialize room states to "I" for all rooms over the period
+for room_id in room_df[room_df["usage"] == "S"]["r_id"].tolist():
+    for d in date_range:
+        room_state_data["r_id"].append(room_id)
+        room_state_data["state_name"].append("I")
+        room_state_data["start_date"].append(d)
+        room_state_data["end_date"].append(d)
+        
+room_state_df = pd.DataFrame(room_state_data)
+
+# In[exhibition room and room state assignment]
+# 2. Assign rooms to exhibitions and add "L", "E", "A" states
 for index, row in exhibitions_df.iterrows():
     current_exh_id = row["exh_id"]
     current_start = row["start_date"]
     current_end = row["end_date"]
+    # Convert current_start and current_end to datetime.datetime
+    current_start = datetime.combine(current_start, datetime.min.time())
+    current_end = datetime.combine(current_end, datetime.min.time())
     
-    # Find overlapping exhibitions in `exh_room_df`
-    overlapping_exhibitions = exh_room_df.merge(
-        exhibitions_df,
-        on="exh_id"
-    ).loc[
-        (exhibitions_df["start_date"] <= current_end) &
-        (exhibitions_df["end_date"] >= current_start)
+    # Find rooms available for the period including 3 days before and 1 day after the exhibition
+    room_availability = room_state_df[
+        (room_state_df["state_name"] == "I") & 
+        (room_state_df["start_date"] >= (current_start - timedelta(days=3))) &
+        (room_state_df["end_date"] <= (current_end + timedelta(days=1)))
     ]
-    
-    # Extract `room_id` of overlapping exhibitions
-    unavailable_rooms = overlapping_exhibitions["room_id"].dropna().unique()
-    
-    # Find available rooms
-    available_rooms = [room for room in room_df[room_df["usage"] == "S"]["r_id"].tolist() if room not in unavailable_rooms]
-    
-    # Assign a random available room if possible
-    if available_rooms:
-        selected_room = random.choice(available_rooms)
-    else:
-        selected_room = None  # No available rooms; handle appropriately
-    
-    # Update the `room_id` in `exh_room_df`
-    exh_room_df.at[index, "room_id"] = selected_room
+
+    if not room_availability.empty:
+        selected_room_id = random.choice(room_availability["r_id"].unique())
+        exh_room_df.at[index, "room_id"] = selected_room_id
+        
+        # Mark states for the selected room
+        for index, row in room_state_df[room_state_df["r_id"] == selected_room_id].iterrows():
+            if row["start_date"] >= (current_start - timedelta(days=3)) and row["end_date"] <= (current_end + timedelta(days=1)):
+                if row["start_date"] < current_start:
+                    room_state_df.at[index, "state_name"] = "L"  # Layout before exhibition
+                elif row["start_date"] >= current_start and row["end_date"] <= current_end:
+                    room_state_df.at[index, "state_name"] = "E"  # Exhibition period
+                elif row["end_date"] > current_end:
+                    room_state_df.at[index, "state_name"] = "A"  # After exhibition cleanup
+
+        # # Update remaining periods to "I" or "C"
+        # before_exhibition_end = room_state_df[
+        #     (room_state_df["r_id"] == selected_room_id) & 
+        #     (room_state_df["end_date"] < current_start)
+        # ]
+        # after_exhibition_start = room_state_df[
+        #     (room_state_df["r_id"] == selected_room_id) & 
+        #     (room_state_df["start_date"] > current_end)
+        # ]
+
+        # # Set states to "I" (idle)
+        # for index in before_exhibition_end.index:
+        #     room_state_df.at[index, "state_name"] = "I"
+
+        # for index in after_exhibition_start.index:
+        #     room_state_df.at[index, "state_name"] = "I"
+
+# 3. Mark some of the "I" states to "C" (construction)
+i_state_indices = room_state_df[room_state_df["state_name"] == "I"].index
+random_indices = random.sample(list(i_state_indices), int(len(i_state_indices) * 0.1))  # Convert 10% of "I" states to "C"
+room_state_df.loc[random_indices, "state_name"] = "C"
 
 # In[7 host_exhibition]:
 host_exh_data = {
@@ -271,15 +349,6 @@ host_exh_df = pd.DataFrame(host_exh_data)
 #     "number": []
 # }
 # num_attendee_df = pd.DataFrame(num_attendee_data)
-
-# In[11 room_state]:
-room_state_data = {
-    "r_id": [],
-    "state_name": [],
-    "start_date": [], 
-    "end_date": []
-}
-room_state_df = pd.DataFrame(room_state_data)
 
 # In[12 sponser]:
 spon_data = {
