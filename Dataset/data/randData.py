@@ -48,10 +48,10 @@ tables = ["application", "applier", "building", "exhibition",
 
 # Number of records for each table
 num_floors = 3
-num_application = 5
+num_application = 200
 num_spon_exh = 30
 num_host = 4
-num_applier = num_application
+num_applier = 1000
 num_spon = 20
 num_volunteers = 100
 num_rooms = 15
@@ -66,15 +66,8 @@ operation_start_date = (today.replace(year=today.year - operation_year)
                         if today.month != 2 or today.day != 29 else today - timedelta(days=365))
 
 # Predefined exhibition names
-num_exhibitions = 5
-# exhibition_names = [
-#     "Ancient Artifacts",
-#     "Modern Marvels",
-#     "Impressionist Paintings",
-#     "Sculptures of the World",
-#     "Renaissance Revival"
-# ]
-exhibition_names = [fake.sentence(random.choice(range(2, 5))) for _ in range(num_exhibitions)]
+num_exhibitions = 300
+exhibition_names = [fake.sentence(random.choice(range(2, 5)))[:-1] for _ in range(num_exhibitions)]
 
 num_building = 3
 building_names = generate_sequential_letters(num_building)
@@ -132,20 +125,30 @@ vol_works = [
 ]
 
 payment_methods = [
-    "cash",
-    "credit card",
-    "digital",
-    "online",
-    "nfc/qrcode"
+    "信用卡",
+    "LinePay",
+    "銀行轉帳"
+]
+
+exhibition_time_span = [
+    30,
+    60,
+    90
 ]
 
 usage_types = ["O", "S"]
+
+# In[6 host]:
+host_data = {
+    "host_name": [fake.name() for _ in range(num_host)]
+}
+host_df = pd.DataFrame(host_data)
 
 # In[2 applier]:
 applier_data = {
     "applier_id": ["aplr"+str(i) for i in range(1, num_applier + 1)],
     "applier_name": [fake.name() for _ in range(num_applier)],
-    "requirement": [fake.sentence() for i in range(num_application)]
+    "host_name": [random.choice(host_df["host_name"]) for _ in range(num_applier)]
 }
 applier_df = pd.DataFrame(applier_data)
 
@@ -153,25 +156,33 @@ applier_df = pd.DataFrame(applier_data)
 exhibitions_data = {
     "exh_id": ["ex"+str(i) for i in range(1, num_exhibitions + 1)],
     "exhName": exhibition_names,
-    "start_date": [fake.date_between(start_date='-90d', end_date='today') for _ in range(num_exhibitions)],
-    "end_date": [fake.date_between(start_date='today', end_date='+90d') for _ in range(num_exhibitions)],
+    "start_date": [fake.date_between(start_date='-10y', end_date='today') for _ in range(num_exhibitions)],
+    "end_date": [],# fake.date_between(start_date='today', end_date='+90d') for _ in range(num_exhibitions)
 }
+# exhibitions_data["start_date"] = [datetime.strptime(date, '%Y-%m-%d') for date in exhibitions_data["start_date"]]
+start_dates = exhibitions_data["start_date"].copy()
+exhibitions_data["end_date"] = [
+    start_date + timedelta(days=random.choice(exhibition_time_span))
+    for start_date in start_dates
+]
 exhibitions_df = pd.DataFrame(exhibitions_data)
 
 # In[1 application]:
 application_data = {
     "app_id": ["aplc"+str(i) for i in range(1, num_application + 1)],
-    "applier_id": [random.choice(applier_data["applier_id"]) for i in range(1, num_applier + 1)],
+    "applier_id": [random.choice(applier_data["applier_id"]) for i in range(1, num_application + 1)],
     "state": [random.choice(application_states) for _ in range(num_application)],
-    "exh_id": [random.choice(exhibitions_data["exh_id"]) for i in range(1, num_exhibitions + 1)],
+    "exh_id": [random.choice(exhibitions_data["exh_id"]) for i in range(1, num_application + 1)],
     "time_span": [],
-    "requirement": [fake.sentence() for i in range(num_application)]
+    "requirement": [fake.sentence() for _ in range(num_application)]
 }
 application_data["time_span"] = [
     (exhibitions_df.loc[exhibitions_df["exh_id"] == i, "end_date"].iloc[0] -
      exhibitions_df.loc[exhibitions_df["exh_id"] == i, "start_date"].iloc[0]).days
     for i in application_data["exh_id"]
 ]
+# for k in application_data.keys():
+#     print(len(application_data[k]))
 application_df = pd.DataFrame(application_data)
 
 # In[3 buildings]:
@@ -205,15 +216,9 @@ room_df = pd.DataFrame(room_data)
 # In[5 exh_room]:
 exh_room_data = {
     "exh_id": ["ex"+str(i) for i in range(1, num_exhibitions + 1)],
-    "room_id": [random.choice(room_data["r_id"]) for _ in range(num_exhibitions)]
+    "room_id": [random.choice(room_df[room_df["usage"] == "S"]["r_id"].tolist()) for _ in range(num_exhibitions)]
 }
 exh_room_df = pd.DataFrame(exh_room_data)
-
-# In[6 host]:
-host_data = {
-    "host_name": [fake.name() for _ in range(num_host)]
-}
-host_df = pd.DataFrame(host_data)
 
 # In[7 host_exhibition]:
 host_exh_data = {
@@ -358,7 +363,8 @@ for i in ticket_types:
             else:
                 ticket_data["price"].append(ticket_data["price"][-1]+random.choice([0, 10]))
             ticket_data["sale_start_date"].append(operation_start_date.replace(year = operation_start_date.year + k))
-            ticket_data["sale_end_date"].append(ticket_data["sale_start_date"][-1].replace(year = ticket_data["sale_start_date"][-1].year+1).replace(day = ticket_data["sale_start_date"][-1].day-1))
+            start_date = ticket_data["sale_start_date"][-1]
+            ticket_data["sale_end_date"].append(start_date.replace(year = start_date.year+1).replace(day = start_date.day-1))
             if i=="y":
                 ticket_data["valid_time_span"].append(365)
             else:
@@ -370,11 +376,11 @@ ticket_df = pd.DataFrame(ticket_data)
 # In[20 transaction]:
 transaction_data = {
     "tran_id": ["tr"+str(i) for i in range(1, num_transaction + 1)],
-    "t_id": [], # we must need this
-    "amount": [generate_discrete_normal(1.5, 3) for _ in range(num_transaction)],
-    "c_phone": [fake.phone_number() for _ in range(num_transaction)],
+    "c_phone": [random.randint(10**9, 10**10 - 1) for _ in range(num_transaction)],
     "date": [fake.date_between(start_date='-'+str(operation_year-1)+'y', end_date='today') for _ in range(num_transaction)],
-    "payment_method": [random.choice(payment_methods) for _ in range(num_transaction)]
+    "payment_method": [random.choice(payment_methods) for _ in range(num_transaction)],
+    "t_id": [], # we must need this
+    "amount": [generate_discrete_normal(1.5, 3) for _ in range(num_transaction)]
 }
 # Match transactions with available tickets
 for i in range(num_transaction):
@@ -398,6 +404,20 @@ tic_ava_data = {
     "t_id": [],
     "r_id": []
 }
+# for tid in tic_ava_data["t_id"]:
+#     r_ids = []
+#     match tid[2]:
+#         case "m":
+#             r_ids = 
+#             break
+#         case "s":
+#             break
+#         case "b":
+#             break
+#         case "y":
+#             break
+#     tic_ava_data["r_id"].append()
+# this is incorrect, we need one data for one ticket to one room, not one ticket to one array
 tic_ava_df = pd.DataFrame(tic_ava_data)
 
 # In[output to .xlsx]:
