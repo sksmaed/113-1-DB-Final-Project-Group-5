@@ -507,7 +507,7 @@ const getTicket = (req, res) => {
       // 查詢可參觀的展覽
       {
         model: Room,
-        attributes: ['rName'],
+        attributes: ['r_id', 'rName'],
         include: [
           {
             model: Exhibition,
@@ -541,6 +541,9 @@ const getTicket = (req, res) => {
       t_name: ticket.t_name,       // 門票名稱
       price: ticket.price,         // 價格
       identity: ticket.iden_name,  // 適用身份
+      sale_start_date: ticket.sale_start_date,
+      sale_end_date: ticket.sale_end_date,
+      valid_time_span: ticket.valid_time_span,
     
       exhibitions: ticket.rooms.map(room => 
         room.exhibitions.map(exh => ({
@@ -549,6 +552,7 @@ const getTicket = (req, res) => {
           end_date: exh.end_date,      // 結束日期
           building: room.building ? room.building.b_name : null,  // 展館名稱
           rName: room.rName,        // 展廳名稱
+          r_id: room.r_id,
         }))
       ).flat()
     }));
@@ -562,5 +566,81 @@ const getTicket = (req, res) => {
   });
 };
 
+const getTicketAdmin = (req, res) => {
+  const { valid_time_span, exhName, building, identity } = req.query;
+  console.log(req.query);
+  const whereConditions = {};
+  const currentDate = new Date().toISOString();
+
+  // 根據 valid_time_span 進行過濾
+  if (valid_time_span && valid_time_span !== 'null') {
+    whereConditions.valid_time_span = valid_time_span;
+  }
+
+  // 根據身份過濾
+  if (identity && identity !== 'null') {
+    whereConditions.iden_name = identity;
+  }
+
+  // 查詢門票
+  Ticket.findAll({
+    where: whereConditions,
+    include: [
+      // 查詢可參觀的展覽
+      {
+        model: Room,
+        attributes: ['r_id', 'rName'],
+        include: [
+          {
+            model: Exhibition,
+            attributes: ['exhName', 'start_date', 'end_date'],
+            through: { attributes: [] }, // 隱藏聯結表屬性
+            where: (exhName && exhName !== 'null') ? { 
+              exhName: { [Op.like]: `%${exhName}%` },
+              start_date: { [Op.lte]: currentDate }, // 展覽開始日期 <= 當前日期
+              end_date: { [Op.gte]: currentDate }, // 展覽結束日期 >= 當前日期
+            } : undefined
+          },
+          {
+            model: Building,
+            attributes: ['b_name'],
+            where: (building && building !== 'null') ? { b_name: { [Op.like]: `%${building}%` } } : undefined,
+          }
+        ],
+      },
+      // 查詢身份類型
+      {
+        model: Identity,
+        attributes: ['iden_name'],
+        where: (identity && identity !== 'null') ? { iden_name: { [Op.like]: `%${identity}%` } } : undefined,
+      }
+   ],
+  })
+  .then((tickets) => {
+    // 將結果格式化
+    const result = tickets.map(ticket => ({
+      t_id: ticket.t_id,
+      t_name: ticket.t_name,       // 門票名稱
+      price: ticket.price,         // 價格
+      identity: ticket.iden_name,  // 適用身份
+      sale_start_date: ticket.sale_start_date,
+      sale_end_date: ticket.sale_end_date,
+      valid_time_span: ticket.valid_time_span,
+    
+      rooms: ticket.rooms.map(room => ({
+          r_id: room.r_id,
+      })),
+    })
+  );
+
+    // 返回結果
+    res.status(200).json(result);
+  })
+  .catch((error) => {
+    console.error("Error retrieving tickets:", error);
+    res.status(500).json({ message: "無法取得門票資料", error: error.message });
+  });
+};
+
 module.exports = { findAll, searchExhUser, filterExhibitions, getVolunteersByExhId, getSponsorsByExhId, 
-  getStaffsByExhId, getStaffById, getTicket };
+  getStaffsByExhId, getStaffById, getTicket, getTicketAdmin };

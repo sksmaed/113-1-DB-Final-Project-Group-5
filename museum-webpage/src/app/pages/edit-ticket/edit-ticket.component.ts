@@ -2,16 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {  MatOptionModule } from '@angular/material/core';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { SearchExhService } from '../../shared/services/search-exh.service';
-import { BuyTicketDialogComponent } from '../buy-ticket-dialog/buy-ticket-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AddService } from '../../shared/services/add.service';
+import { EditExhService } from '../../shared/services/edit-exh.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EditTicketDialogComponent } from '../edit-ticket-dialog/edit-ticket-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-edit-ticket',
@@ -29,7 +30,7 @@ export class EditTicketComponent implements OnInit {
   });
   tickets: any[] = [];
   displayedColumns: string[] = ['t_name', 'price', 'sale_start_date', 'sale_end_date', 'valid_time_span',
-   'iden_name', 'rooms', 'actions'];
+   'identity', 'exhibitions', 'actions'];
 
   // 用 Map 管理每個 ticket 的展示狀態
   showRoomsMap = new Map<string, boolean>();
@@ -47,15 +48,15 @@ export class EditTicketComponent implements OnInit {
     return this.identityMapping[idenCode] || '不限'; // 如果沒有對應值，顯示 '不限'
   }
 
-  constructor(private fb: FormBuilder, private searchExhService: SearchExhService,
-    private dialog: MatDialog, private addService: AddService, private snackBar: MatSnackBar) {}
+  constructor(private fb: FormBuilder, private searchExhService: SearchExhService, private router: Router,
+    private dialog: MatDialog, private editService: EditExhService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void { }
 
   onSearch(): void {
     const params = this.searchForm.value;
     console.log('Search Params:', params);
-    this.searchExhService.getTicket(params).subscribe((data) => {
+    this.searchExhService.getTicketAdmin(params).subscribe((data) => {
       console.log(data);
       this.tickets = data;
     });
@@ -74,31 +75,33 @@ export class EditTicketComponent implements OnInit {
   }
 
   editTicket(ticket: any): void {
-    const dialogRef = this.dialog.open(BuyTicketDialogComponent, {
+    const dialogRef = this.dialog.open(EditTicketDialogComponent, {
       width: '800px',
       data: ticket, // 傳入相關票務資料
     });
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.processPurchase(result);
+        this.updateTicket(result);
       }
     });
   }
 
-  navigateToAddTicket(): void {}
+  navigateToAddTicket(): void {
+    this.router.navigate(['/add-ticket']);
+  }
 
-  processPurchase(purchaseData: any): void {
+  updateTicket(data: any): void {
     // 調用後端 API 保存交易
-    console.log(purchaseData);
-    this.addService.addTransaction(purchaseData).subscribe(
+    console.log(data);
+    this.editService.updateTicket(data).subscribe(
       response => {
-        console.log('交易成功', response);
-        this.snackBar.open('交易成功', '確定', { duration: 3000 });
+        console.log('更新展覽票券成功', response);
+        this.snackBar.open('更新展覽票券成功', '確定', { duration: 3000 });
       },
       err => {
-        console.error('交易失敗', err);
-        this.snackBar.open('交易失敗', '關閉', { duration: 3000 });
+        console.error('更新展覽票券失敗', err);
+        this.snackBar.open('更新展覽票券失敗', '關閉', { duration: 3000 });
       }
     );
   }

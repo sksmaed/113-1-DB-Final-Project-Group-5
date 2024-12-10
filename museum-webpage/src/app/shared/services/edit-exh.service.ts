@@ -32,4 +32,9 @@ export class EditExhService {
   updateStaff(s_id: any, record: any): Observable<any> {
     return this.http.put(API_URL + `update-staff/${s_id}`, record)
   }
+
+  updateTicket(record: any): Observable<any> {
+    const t_id = record.t_id;
+    return this.http.put(API_URL + `update-ticket/${t_id}`, record)
+  }
 }

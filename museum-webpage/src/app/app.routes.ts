@@ -13,6 +13,7 @@ import { StaffDutyComponent } from './pages/staff-duty/staff-duty.component';
 import { AddExhibitionComponent } from './pages/add-exhibition/add-exhibition.component';
 import { SearchTicketComponent } from './pages/search-ticket/search-ticket.component';
 import { EditTicketComponent } from './pages/edit-ticket/edit-ticket.component';
+import { AddTicketComponent } from './pages/add-ticket/add-ticket.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
@@ -30,4 +31,5 @@ export const routes: Routes = [
     { path: "add-exh", component: AddExhibitionComponent },
     { path: "search-ticket", component: SearchTicketComponent },
     { path: "edit-ticket", component: EditTicketComponent },
+    { path: "add-ticket", component:  AddTicketComponent},
 ];

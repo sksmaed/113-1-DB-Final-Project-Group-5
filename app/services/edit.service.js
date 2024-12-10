@@ -3,6 +3,8 @@ const Exhibition = db.exhibition;
 const Room = db.room;
 const Host = db.host;
 const Staff = db.staff;
+const Ticket = db.ticket;
+const TicketAvail = db.ticketAvail;
 const VolunteerWork = db.exhVolunteer;
 const ExhSponsor = db.exhSponsor;
 const ExhStaffDuty = db.exhStaffDuty;
@@ -178,4 +180,50 @@ const updateStaff = (req, res) => {
   });
 };
 
-module.exports = { updateExhibition, updateVolunteer, updateSponsor, updateStaffDuty, updateStaff };
+const updateTicket = (req, res) => {
+  const { t_id } = req.params;
+  let { t_name, price, sale_start_date, sale_end_date, valid_time_span, iden_name, rooms } = req.body;
+  sale_start_date = new Date(sale_start_date).toISOString();
+  sale_end_date = new Date(sale_start_date).toISOString();
+  
+  // 查詢門票資料
+  Ticket.findOne({ where: { t_id } })
+  .then((ticket) => {
+    if (!ticket) {
+      return res.status(404).json({ message: '門票未找到' });
+    }
+    
+    // 更新門票資料
+    ticket.t_name = t_name || ticket.t_name;
+    ticket.price = price || ticket.price;
+    ticket.sale_start_date = sale_start_date || ticket.sale_start_date;
+    ticket.sale_end_date = sale_end_date || ticket.sale_end_date;
+    ticket.valid_time_span = valid_time_span || ticket.valid_time_span;
+    ticket.iden_name = iden_name || ticket.iden_name;
+
+      // 保存更新後的門票資料
+      return ticket.save();
+    })
+    .then((updatedTicket) => {
+      if (rooms && Array.isArray(rooms)) {
+        // 刪除原本的紀錄
+        return TicketAvail.destroy({ where: { t_id } })
+          .then(() => {
+            // 插入新的紀錄
+            const newRecords = rooms.map((room) => ({ t_id, r_id: room.r_id }));
+            return TicketAvail.bulkCreate(newRecords);
+          })
+          .then(() => updatedTicket); // 返回更新後的門票
+      }
+      return updatedTicket; // 如果沒有 rooms，只返回更新後的門票
+    })
+    .then((updatedTicket) => {
+      res.status(200).json({ message: '門票與展廳更新成功', ticket: updatedTicket });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ message: '無法更新門票資料', error: error.message });
+    });
+};
+
+module.exports = { updateExhibition, updateVolunteer, updateSponsor, updateStaffDuty, updateStaff, updateTicket };

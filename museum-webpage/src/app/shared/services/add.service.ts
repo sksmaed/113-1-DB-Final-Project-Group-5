@@ -31,4 +31,8 @@ export class AddService {
   addTransaction(tranData: any): Observable<any> {
     return this.http.post(API_URL + 'add-tran', tranData);
   }
+
+  addTicket(ticketData: any): Observable<any> {
+    return this.http.post(API_URL + 'add-ticket', ticketData);
+  }
 }
