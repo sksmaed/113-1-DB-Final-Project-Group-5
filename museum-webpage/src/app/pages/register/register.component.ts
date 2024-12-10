@@ -12,8 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class RegisterComponent implements OnInit {
   form: FormGroup = new FormGroup({
-    username: new FormControl(''),
-    phone: new FormControl(''),
+    s_id: new FormControl(''),
+    s_name: new FormControl(''),
+    position: new FormControl(''),
+    contract_start_date: new FormControl(''),
     password: new FormControl(''),
   });
   submitted = false;
@@ -27,23 +29,11 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.formBuilder.group(
       {
-        username: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(4),
-            Validators.maxLength(20)
-          ]
-        ],
-        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(40)
-          ]
-        ]
+        s_id: ['', [Validators.required]],
+        s_name: ['', [Validators.required]],
+        position: ['', [Validators.required]],
+        contract_start_date: ['', [Validators.required]],
+        password: ['', [Validators.required]],
       }
     )
   }
@@ -57,9 +47,8 @@ export class RegisterComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const { username, phone, password } = this.form.getRawValue();
-    const roles = "admin";
-    this.authService.register(username!, phone!, password!, roles!).subscribe({
+    const { s_id, s_name, position, contract_start_date, password } = this.form.getRawValue();
+    this.authService.register(s_id, s_name, position, contract_start_date, password).subscribe({
       next: (data) => {
         console.log(data);
         this.isSuccessful = true;

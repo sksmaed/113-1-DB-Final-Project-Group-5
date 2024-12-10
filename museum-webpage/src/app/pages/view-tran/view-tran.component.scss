@@ -1,0 +1,35 @@
+.transaction-records-container {
+  padding: 16px;
+}
+
+.search-form {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-field {
+  flex: 1;
+}
+
+.form-actions {
+  text-align: right;
+}
+
+.table-container {
+  margin-top: 24px;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  text-align: center;
+}

@@ -14,17 +14,9 @@ const userService = require("../services/user.service");
 //     }
 // )
 
-router.get("/test/all", userService.allAccess);
-
-router.get(
-    "/test/user",
-    [authJwt.verifyToken],
-    userService.userBoard
-);
-
 router.get(
     "/test/admin",
-    [authJwt.verifyToken, authJwt.isAdmin],
+    [authJwt.verifyToken],
     userService.adminBoard
 );
 

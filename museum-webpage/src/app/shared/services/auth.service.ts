@@ -12,19 +12,14 @@ export class AuthService {
 
   constructor( private http: HttpClient) { }
 
-  login(username: string, password: string): Observable<any> {
+  login(s_id: string, password: string): Observable<any> {
     return this.http.post(API_URL + 'signin', {
-      username,
+      s_id,
       password
     })
   }
   
-  register(username: string, phone:string, password: string, roles: string): Observable<any> {
-    return this.http.post(API_URL + 'signup', {
-      username,
-      phone,
-      password,
-      roles
-    })
+  register(s_id: string, s_name: string, position: string, contract_start_date: string, password: string): Observable<any> {
+    return this.http.post(API_URL + 'signup', { s_id, s_name, position, contract_start_date, password })
   }
 }

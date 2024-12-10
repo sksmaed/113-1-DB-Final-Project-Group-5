@@ -1,6 +1,6 @@
 // board-admin.component.ts
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-board-admin',
@@ -10,7 +10,11 @@ import { RouterLink } from '@angular/router';
 })
 export class BoardAdminComponent implements OnInit {
   content?: string;
-  constructor( ) { }
+  constructor( private router: Router) { }
 
   ngOnInit(): void { }
+
+  navigateTo(route: string): void {
+    this.router.navigate([`/${route}`]);
+  }  
 }

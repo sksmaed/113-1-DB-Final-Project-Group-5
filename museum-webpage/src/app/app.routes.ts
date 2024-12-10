@@ -15,6 +15,7 @@ import { EditTicketComponent } from './pages/edit-ticket/edit-ticket.component';
 import { AddTicketComponent } from './pages/add-ticket/add-ticket.component';
 import { AnalysisTranComponent } from './pages/analysis-tran/analysis-tran.component';
 import { ViewTranComponent } from './pages/view-tran/view-tran.component';
+import { CustomerTransHistoryComponent } from './pages/customer-trans-history/customer-trans-history.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: "/home", pathMatch: "full" },
@@ -33,5 +34,6 @@ export const routes: Routes = [
     { path: "edit-ticket", component: EditTicketComponent },
     { path: "add-ticket", component:  AddTicketComponent},
     { path: "analysis-tran", component:  AnalysisTranComponent},
-    //{ path: "view-tran", component:  ViewTranComponent},
+    { path: "view-tran", component:  ViewTranComponent},
+    { path: "customer-trans-history", component:  CustomerTransHistoryComponent},
 ];

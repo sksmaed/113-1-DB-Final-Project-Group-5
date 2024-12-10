@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router } from 'express';
 import { SearchExhService } from '../../shared/services/search-exh.service';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,21 +13,22 @@ import { MatTableModule } from '@angular/material/table';
   selector: 'app-view-tran',
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatOptionModule,
     MatDatepickerModule, MatSelectModule, MatInputModule, MatTableModule],
-    providers: [
-      provideNativeDateAdapter()
-    ],
+  providers: [
+    provideNativeDateAdapter()
+  ],
   templateUrl: './view-tran.component.html',
   styleUrl: './view-tran.component.scss'
 })
 export class ViewTranComponent {
   searchForm: FormGroup;
   transactionRecords = [];
-  displayedColumns: string[] = ['tran_id', 'c_id', 'date', 'payment_method', 't_name', 'amount'];
+  displayedColumns: string[] = ['tran_id', 'c_phone', 'date', 'payment_method', 't_name', 'amount'];
 
-  constructor(private fb: FormBuilder, private router: Router, private searchExhService: SearchExhService) {
+  constructor(private fb: FormBuilder, private searchExhService: SearchExhService) {
     this.searchForm = this.fb.group({
       startDate: [''],
       endDate: [''],
+      c_phone: [''],
       ticketName: [''],
       identity: [''],
       validTimeSpan: ['']

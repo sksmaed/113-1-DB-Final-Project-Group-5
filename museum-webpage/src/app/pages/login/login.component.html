@@ -4,17 +4,17 @@
       *ngIf="!isLoggedIn"
       needs-validation [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="note">  
-        <h1> 使用者登入 </h1>  
+        <h1> 職員登入 </h1>  
       </div>  
       
       <div class="mb-4">
-        <label for="username" class="form-label">Username</label>
+        <label for="username" class="form-label">員工編號</label>
         <input type="text" autofocus formControlName="username" id="username" class="form-control"
         [ngClass]="{ 'is-invalid': submitted && f['username'].errors,
                      'is-valid': submitted && !f['username'].errors }" 
         />
         <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
-          <div *ngIf="f['username'].errors['required']">Username 為必填</div>
+          <div *ngIf="f['username'].errors['required']">員工編號為必填</div>
         </div>
         <div class="valid-feedback">
           填寫正確
