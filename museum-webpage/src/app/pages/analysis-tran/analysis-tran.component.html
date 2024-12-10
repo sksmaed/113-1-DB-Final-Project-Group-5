@@ -1,0 +1,65 @@
+<div>
+    <!-- 統計摘要 -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h1>票券售出狀況分析</h1>
+      <button mat-raised-button color="primary" (click)="navigateToTransactionRecords()">查看交易紀錄</button>
+    </div>
+  
+    <div class="summary">
+      <div>
+        <h3>今日交易總數</h3>
+        <p>{{ stats.todayTransactionCount }}</p>
+      </div>
+      <div>
+        <h3>售出總票券數量</h3>
+        <p>{{ stats.totalTicketsSold }}</p>
+      </div>
+      <div>
+        <h3>總金額</h3>
+        <p>{{ stats.totalRevenue | currency }}</p>
+      </div>
+    </div>
+  
+    <!-- 圖表 -->
+    <div>
+      <h3>各票券售出數量</h3>
+      <canvas baseChart
+              [data]="chartData"
+              [labels]="chartLabels"
+              [type]="'bar'"></canvas>
+    </div>
+  
+    <!-- 查詢表單 -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+      <mat-form-field appearance="fill">
+        <mat-label>日期</mat-label>
+        <input matInput [matDatepicker]="date" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+        <mat-datepicker #date></mat-datepicker>
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>身份別</mat-label>
+        <mat-select formControlName="identity">
+          <mat-option [value]="''">不限</mat-option>
+          <mat-option value="A">成人</mat-option>
+          <mat-option value="S">學生</mat-option>
+          <mat-option value="C">幼童</mat-option>
+          <mat-option value="O">年長者</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>有效時間</mat-label>
+        <mat-select formControlName="validTimeSpan">
+          <mat-option [value]="''">不限</mat-option>
+          <mat-option value="1">單日票</mat-option>
+          <mat-option value="7">週票</mat-option>
+          <mat-option value="30">月票</mat-option>
+          <mat-option value="365">年票</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit">查詢</button>
+    </form>
+  </div>  
