@@ -60,7 +60,7 @@ num_transaction = 20000
 num_ticket = 20
 num_staff = 50
 
-operation_year = 5
+operation_year = 10
 today = datetime.today().date() - timedelta(days=50)
 operation_start_date = (today.replace(year=today.year - operation_year) 
                         if today.month != 2 or today.day != 29 else today - timedelta(days=365))
@@ -370,15 +370,27 @@ ticket_df = pd.DataFrame(ticket_data)
 # In[20 transaction]:
 transaction_data = {
     "tran_id": ["tr"+str(i) for i in range(1, num_transaction + 1)],
-    # "t_id": [], # we must need this
-    # "amount": [generate_discrete_normal(1.5, 3) for _ in range(num_transaction)],
+    "t_id": [], # we must need this
+    "amount": [generate_discrete_normal(1.5, 3) for _ in range(num_transaction)],
     "c_phone": [fake.phone_number() for _ in range(num_transaction)],
-    "date": [fake.date_between(start_date='-'+str(operation_year)+'y', end_date='today') for _ in range(num_transaction)],
+    "date": [fake.date_between(start_date='-'+str(operation_year-1)+'y', end_date='today') for _ in range(num_transaction)],
     "payment_method": [random.choice(payment_methods) for _ in range(num_transaction)]
 }
-# for i in range(num_transaction):
-#     ava_tickets = ticket_df["t_id"][ticket_df["sale_start_date"] < transaction_data["date"][transaction_data["tran_id"] == "tr"+str(i)] & ticket_df["sale_end_date"] > transaction_data["date"][transaction_data["tran_id"] == "tr"+str(i)] & transaction_data["tran_id"] == "tr"+str(i)]
-#     transaction_data["t_id"].append(random.choice(ava_tickets))
+# Match transactions with available tickets
+for i in range(num_transaction):
+    tran_date = transaction_data["date"][i]  # Get the transaction date
+    # Filter tickets available for this transaction date
+    ava_tickets = ticket_df[
+        (ticket_df["sale_start_date"] <= tran_date) &
+        (ticket_df["sale_end_date"] >= tran_date)
+    ]["t_id"].tolist()  # Convert to list for random.choice
+    
+    if ava_tickets:  # Check if there are available tickets
+        transaction_data["t_id"].append(random.choice(ava_tickets))
+    else:
+        transaction_data["t_id"].append(None)  # Or handle as needed
+
+# Create DataFrame
 transaction_df = pd.DataFrame(transaction_data)
 
 # In[22 ticket_ava]:
