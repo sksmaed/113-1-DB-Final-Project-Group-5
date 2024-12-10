@@ -84,8 +84,8 @@ iden_dict = {
 ticket_types = [
     "m", # main
     "s", # special
-    "b", # by building
-    "y", # year ticket
+    # "b", # by building
+    "y" # year ticket
 ]
 
 ticket_identity = [
@@ -99,7 +99,7 @@ ticket_identity = [
 ticket_prices_by_type = {
     "m": 150,
     "s": 100,
-    "b": 100,
+    # "b": 100,
     "y": 1000
 }
 
@@ -427,6 +427,19 @@ staff_work_data = {
     "exh_id": [],
     "duty": []
 }
+
+# Randomly assign sponsors to exhibitions
+for exh_id in exhibitions_df["exh_id"]:
+    # Randomly choose at least one unique sponsor for this exhibition
+    num_staff_work = random.randint(0, 4)
+    chosen_s = random.sample(staff_data["s_id"], num_staff_work)
+    
+    # Assign random amounts for each sponsor-exhibition pair
+    for sid in chosen_s:
+        staff_work_data["s_id"].append(sid)
+        staff_work_data["exh_id"].append(exh_id)
+        staff_work_data["duty"].append(random.choice(vol_works))
+        
 staff_work_df = pd.DataFrame(staff_work_data)
 
 # In[18 customer identity]:
@@ -510,20 +523,20 @@ tic_ava_data = {
     "t_id": [],
     "r_id": []
 }
-# for tid in tic_ava_data["t_id"]:
-#     r_ids = []
-#     match tid[2]:
-#         case "m":
-#             r_ids = 
-#             break
-#         case "s":
-#             break
-#         case "b":
-#             break
-#         case "y":
-#             break
-#     tic_ava_data["r_id"].append()
-# this is incorrect, we need one data for one ticket to one room, not one ticket to one array
+for t in ticket_df["t_id"].tolist():
+    match t[2]:
+        case "m":
+            for r in room_df["r_id"]:
+                tic_ava_data["t_id"].append(t)
+                tic_ava_data["r_id"].append(r)
+        case "s":
+            for r in room_df[room_df["usage"] == "S"]["r_id"].tolist():
+                tic_ava_data["t_id"].append(t)
+                tic_ava_data["r_id"].append(r)
+        case "y":
+            for r in room_df["r_id"]:
+                tic_ava_data["t_id"].append(t)
+                tic_ava_data["r_id"].append(r)
 tic_ava_df = pd.DataFrame(tic_ava_data)
 
 # In[output to .xlsx]:
