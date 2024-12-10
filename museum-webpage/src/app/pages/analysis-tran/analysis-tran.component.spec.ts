@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BoardUserComponent } from './board-user.component';
+import { AnalysisTranComponent } from './analysis-tran.component';
 
-describe('BoardUserComponent', () => {
-  let component: BoardUserComponent;
-  let fixture: ComponentFixture<BoardUserComponent>;
+describe('AnalysisTranComponent', () => {
+  let component: AnalysisTranComponent;
+  let fixture: ComponentFixture<AnalysisTranComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BoardUserComponent]
+      imports: [AnalysisTranComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BoardUserComponent);
+    fixture = TestBed.createComponent(AnalysisTranComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
