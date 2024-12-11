@@ -36,7 +36,6 @@ export class AddSponsorDialogComponent {
   ) {
     this.sponsorForm = this.fb.group({
       spon_name: ['', Validators.required],
-      date: ['', Validators.required],
       amount: ['', Validators.required]
     });
   }

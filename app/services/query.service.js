@@ -80,8 +80,9 @@ const searchExhUser = (req, res) => {
 
   // 展覽類別條件
   if (usage && usage !== 'null') {
-    whereRoom.usage = type; // 'O' 或 'S'
+    whereRoom.usage = usage; // 'O' 或 'S'
   }
+  console.log(whereRoom);
 
   // 展覽日期條件
   if (date && date !== 'null') {
@@ -102,39 +103,22 @@ const searchExhUser = (req, res) => {
     };
   }
 
-  //加入展館條件
-  if (building && building !== "null") {
-    includeConditions.push({
-      model: Room,
-      include: [
-        {
-          model: Building,
-          attributes: ["b_name"], // 僅選取展館名稱
-          where: {
-            b_name: {
-              [Op.like]: `%${building}%`,
-            },
-          },
-        },
-      ],
-    });
-  } else {
-    includeConditions.push({
-      model: Room,
-      include: [
-        {
-          model: Building,
-          attributes: ["b_name"], // 僅選取展館名稱
-        },
-      ],
-    });
-  }
-
-  // 加入展廳資訊
+  // 加入展館條件和展廳條件
   includeConditions.push({
     model: Room,
-    through: ExhRoom,
-    attributes: ["rName"]
+    where: whereRoom, // 加入展廳篩選條件
+    include: [
+      {
+        model: Building,
+        attributes: ["b_name"], // 僅選取展館名稱
+        where: building && building !== "null" ? {
+          b_name: {
+            [Op.like]: `%${building}%`,
+          },
+        } : undefined,
+      },
+    ],
+    attributes: ["rName"] // 僅選取展廳名稱
   });
 
   // 加入主辦方資訊
@@ -157,6 +141,7 @@ const searchExhUser = (req, res) => {
       res.status(500).json({ message: "無法取得展覽資料", error: error.message });
     });
 };
+
 
 const filterExhibitions = (req, res) => {
   const { year, month, exhName , building, host } = req.query;
@@ -500,6 +485,10 @@ const getTicket = (req, res) => {
     whereConditions.iden_name = identity;
   }
 
+  // 添加有效票券的篩選條件
+  whereConditions.sale_start_date = { [Op.lte]: currentDate }; // 銷售開始日期 <= 當前日期
+  whereConditions.sale_end_date = { [Op.gte]: currentDate };   // 銷售結束日期 >= 當前日期
+
   // 查詢門票
   Ticket.findAll({
     where: whereConditions,
@@ -517,7 +506,10 @@ const getTicket = (req, res) => {
               exhName: { [Op.like]: `%${exhName}%` },
               start_date: { [Op.lte]: currentDate }, // 展覽開始日期 <= 當前日期
               end_date: { [Op.gte]: currentDate }, // 展覽結束日期 >= 當前日期
-            } : undefined
+            } : {
+              start_date: { [Op.lte]: currentDate }, // 展覽開始日期 <= 當前日期
+              end_date: { [Op.gte]: currentDate }, // 展覽結束日期 >= 當前日期
+            }
           },
           {
             model: Building,
@@ -535,8 +527,12 @@ const getTicket = (req, res) => {
     ]
   })
   .then((tickets) => {
+    const filteredTickets = tickets.filter(ticket => 
+      ticket.rooms.some(room => room.exhibitions && room.exhibitions.length > 0)
+    );
+
     // 將結果格式化
-    const result = tickets.map(ticket => ({
+    const result = filteredTickets.map(ticket => ({
       t_id: ticket.t_id,
       t_name: ticket.t_name,       // 門票名稱
       price: ticket.price,         // 價格
@@ -585,6 +581,7 @@ const getTicketAdmin = (req, res) => {
   // 查詢門票
   Ticket.findAll({
     where: whereConditions,
+    order: [['sale_start_date', 'DESC']],
     include: [
       // 查詢可參觀的展覽
       {
