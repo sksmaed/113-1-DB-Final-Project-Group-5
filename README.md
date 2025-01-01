@@ -28,6 +28,11 @@ cd museum-webpage # Switch to the folder containing the frontend framework
 ng serve -o # Launch the webpage</pre>
 3. Append `home` to the end of the URL in your browser.
 
-## 其他事項說明
+## ⚠️Additional Notes
 1. To register an administrator, change the URL to ```/register```; otherwise, the admin panel will not be displayed.
 2. If the bar chart in the transaction analysis section appears too small, reloading the page should resolve the issue.
+
+## Team Member
+- 宋凱翔
+- 鄭兆恩
+- 林澐稚
