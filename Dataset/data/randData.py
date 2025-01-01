@@ -47,18 +47,24 @@ tables = ["application", "applier", "building", "exhibition",
           # "room", "ticket", "customer", "identity", "collection", "rent_collection"]
 
 # Number of records for each table
-num_floors = 3
 num_application = 200
+num_applier = 1000
+
+
+num_building = 3
+building_names = generate_sequential_letters(num_building)
+building_names = ["building" + n for n in building_names]
+
+num_floors = 3
+num_rooms = 35
+num_spon = 20
 num_spon_exh = 30
 num_host = 4
-num_applier = 1000
-num_spon = 20
-num_volunteers = 100
-num_rooms = 35
-num_customer = 10000
-num_transaction = 20000
-num_ticket = 20
 num_staff = 50
+num_volunteers = 100
+num_customer = 10000
+# num_ticket = 20
+num_transaction = 20000
 
 operation_year = 10
 today = datetime.today().date() - timedelta(days=50)
@@ -68,10 +74,6 @@ operation_start_date = (today.replace(year=today.year - operation_year)
 # Predefined exhibition names
 num_exhibitions = 400
 exhibition_names = [fake.sentence(random.choice(range(2, 5)))[:-1] for _ in range(num_exhibitions)]
-
-num_building = 3
-building_names = generate_sequential_letters(num_building)
-building_names = ["building" + n for n in building_names]
 
 iden_dict = {
     "C": "Child",
@@ -84,7 +86,6 @@ iden_dict = {
 ticket_types = [
     "m", # main
     "s", # special
-    # "b", # by building
     "y" # year ticket
 ]
 
@@ -99,7 +100,6 @@ ticket_identity = [
 ticket_prices_by_type = {
     "m": 150,
     "s": 100,
-    # "b": 100,
     "y": 1000
 }
 
