@@ -1,15 +1,33 @@
-# 113-1-DB-Final-Project-Group-5
-一個簡易博物館展覽與購票系統
+# 博物館展覽與購票系統（Museum Exhibition Management and Ticketing System）
 
-## 執行方式
-1. 開啟 pdAdmin 4 匯入指定的 Museum.backup 檔。
-2. 變更 pgAdmin 密碼（非必要，若無法執行可以嘗試）：在 pgAdmin 輸入 ```ALTER USER postgre WITH PASSWORD '<postgre_password>';``` ，password 在 .env 檔。
-3. 在專案跟目錄下開啟終端機，輸入以下指令：
-<pre>node server.js # 啟動後端伺服器 
-cd museum-webpage # 切換到放置前端框架的資料夾 
-ng serve -o # 啟動網頁</pre>
-4. 在網址最後面輸入```home```。
+This repository is the final project for the *Database Management* course by Group 5. The project aims to implement a complete system with a complex and well-optimized relational database. We selected museum exhibition management as our topic to assist a large museum with multiple buildings and numerous exhibition halls.
+
+## 🛠️ Features
+### **Exhibition Management**
+- Customers can search for exhibitions based on their status, category, date, exhibition name, and building name.
+- Staff can add, edit, and delete exhibitions and their related records (e.g., volunteer assignments, sponsorships, staff assignments).
+
+### **Ticket Sales and Management**
+- Customers can search for tickets by type, exhibition name, building name, or customer identity.
+- To purchase tickets, customers only need to select the desired quantity, provide a phone number, and choose a payment method.
+- Customers can view their ticket purchase history by entering their phone number.
+- Staff can add and edit tickets, specifying the exhibitions each ticket grants access to.
+
+### **Ticket Sales Analysis**
+- Staff can review ticket transaction records and analyze total sales and revenue within a specified time frame and ticket attributes with a visualized graph.
+
+## 📖 System Highlights
+1. **Indexing:** Create indices to speed up frequently used queries and complex queries.
+2. **Transaction Control:** Implemented locks to manage concurrency issues.
+
+## ⏩️ Execution Steps
+1. Open pdAdmin 4 and import the specified `Museum.backup` file.
+2. In the project's root directory, open the terminal and enter the following commands:
+<pre>node server.js # Start backend server 
+cd museum-webpage # Switch to the folder containing the frontend framework
+ng serve -o # Launch the webpage</pre>
+3. Append `home` to the end of the URL in your browser.
 
 ## 其他事項說明
-1. 要註冊管理員可以變更網址至```/register```，否則不會顯示管理者面板。
-2. 交易紀錄分析的長條圖若非常小可以透過重新載入頁面解決。
+1. To register an administrator, change the URL to ```/register```; otherwise, the admin panel will not be displayed.
+2. If the bar chart in the transaction analysis section appears too small, reloading the page should resolve the issue.
